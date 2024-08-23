@@ -35,17 +35,17 @@ const campRegistrationSchema = new mongoose.Schema({
      },
      archdeaconry: {
           type: "String",
-          enum: ['Abule Egba', 'Agege', 'Amuwo Odofin', 'Bariga', 'Festac', 'Gowon Estate', 'Iba', 'Idimu', 'Ijede', 'Iju-Ishaga', 'Ikeja', 'Ikorodu', 'Ikorodu-North', 'Ikosi-Ketu', 'Imota', 'Ipaja', 'Isolo', 'Ogudu', 'Ojo', 'Ojo-Alaba', 'Ojodu', 'Opebi', 'Oshodi', 'Oto-Awori', 'Owutu', 'Satallite', 'Somolu'],
+          enum: ['Abule Egba', 'Agege', 'Amuwo Odofin', 'Bariga', 'Cathedral', 'Festac', 'Gowon Estate', 'Iba', 'Idimu', 'Ijede', 'Iju-Ishaga', 'Ikeja', 'Ikorodu', 'Ikorodu-North', 'Ikosi-Ketu', 'Imota', 'Ipaja', 'Isolo', 'Ogudu', 'Ojo', 'Ojo-Alaba', 'Ojodu', 'Opebi', 'Oshodi', 'Oto-Awori', 'Owutu', 'Satallite', 'Somolu'],
           required: [true, 'Please Select An Archdeaconry'],
      },
      parish: {
           type: "String",
           required: [true, 'Please Select A Parish'],
      },
-     // price: {
-     //      type: 'String',
-     //      required: [true, 'Please Enter Your Price']
-     // }
+     transactionID: {
+          type: 'String',
+          required: [true, 'Please Enter Your Transaction ID']
+     }
 }, {timestamps: true})
 
 

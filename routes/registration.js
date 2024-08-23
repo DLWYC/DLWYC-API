@@ -10,7 +10,7 @@ routes.get('/', async(req,res)=>{
 })
 
 routes.post('/', cors(), async(req, res)=>{
-     const { fullName, email, phoneNumber, gender, archdeaconry, parish, price } = await req.body
+     const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, transactionID } = await req.body
 
      try{
           const camper = await new campersModel({
@@ -20,7 +20,8 @@ routes.post('/', cors(), async(req, res)=>{
                gender: gender,
                archdeaconry: archdeaconry,
                parish: parish,
-               // price: price
+               age: age,
+               transactionID: transactionID
           })
 
           await campersModel.create(camper)
