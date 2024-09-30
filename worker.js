@@ -31,7 +31,7 @@ try {
   return err;
 }
 
-worker.register("tasks.sendEmail", async (args, task) => {
+worker.register("tasks.sendPaymentEmail", async (args, task) => {
   const { email, uniqueID, fullName, archdeaconry, parish } = args;
   console.log(args);
 
@@ -52,14 +52,6 @@ worker.register("tasks.sendEmail", async (args, task) => {
           </p>
 
           <br/>
-
-          <b> Here are your details: </b>
-          <ol>
-            <li>UNIQUE ID: ${uniqueID}</li>   
-            <li>NAME : ${fullName}</li>   
-            <li>ARCHDEACONRY: ${archdeaconry} </li>   
-            <li>PARISH: ${parish} </li>   
-          </ol>
            
 
           CHECKLIST
@@ -92,7 +84,66 @@ worker.register("tasks.sendEmail", async (args, task) => {
       error.message.include("Unexpected socket close") ||
       error.message.include("connect ENETUNREACH 173.194.79.109:465")
     ) {
-     throw new Error("Temporary Network issues, retrying....")
+      throw new Error("Temporary Network issues, retrying....");
+    } else {
+      throw error;
+    }
+  }
+
+  // })
+});
+
+worker.register("tasks.sendRegistrationEmail", async (args, task) => {
+  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL } = args;
+  console.log(args);
+
+  const mailOptions = {
+    from: process.env.EMAIL,
+    to: email,
+    subject: "Camp Registration Email",
+    html: `
+          <div>
+          <b>THANK YOU FOR SUCCESSFULLY REGISTERING TO BECOME A PART OF THE DIOCESE OF LAGOS WEST YOUTH CHAPLAINCY FAMILY.</b>
+
+          <p>
+               Please Do Well To Note The Following Information Below As They Will Be Used To <span style='color: red; font-weight: bold;' >Uniquely</span> Identify You As A Member Of DLWYC
+          </p>
+
+          <br/>
+
+          <b> Here are your details: </b>
+          <ol>
+            <li>UNIQUE ID: ${uniqueID}</li>
+            <li>NAME : ${fullName}</li>  
+            ${archdeaconry === null ? ("") : `<li>ARCHDEACONRY: ${archdeaconry}</li>`} 
+            ${archdeaconry === null ? ("") : `<li>PARISH: ${parish}</li>`} 
+          </ol>
+           
+          <p>
+         <span> Please kindly note that your <b style='color: red; font-weight: bold;'>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily. </span>
+
+         <span> Click The Link Below To Proceed To Make Payment For This Year Camp <b style='color: red; font-weight: bold;'> <a href=${paymentURL}>Click Here</a> </b> is for you alone and it can be use to register for subsequent events easily. </span>
+
+          Remain Blessed & See You There
+          </p>
+          <b> DIOCESAN YOUTH CHAPLAINCY <b/>
+          </div>
+          `,
+  };
+
+  try {
+    const response = await transporter.sendMail(mailOptions);
+    console.log(response);
+    return response;
+  } catch (err) {
+    const error = errorHandling(err);
+    console.log(`Error from sending email: ${error}`);
+
+    if (
+      error.message.include("Unexpected socket close") ||
+      error.message.include("connect ENETUNREACH 173.194.79.109:465")
+    ) {
+      throw new Error("Temporary Network issues, retrying....");
     } else {
       throw error;
     }

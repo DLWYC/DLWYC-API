@@ -95,6 +95,7 @@ function generateUniqueId(selectedArchdeaconry) {
             break;
         default:
             archInitials = "00"
+            // Visitors
     
     
     }  

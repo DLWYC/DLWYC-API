@@ -13,7 +13,7 @@ const campRegistrationSchema = new mongoose.Schema(
   {
     uniqueID: {
       type: String,
-      default: uuid4(),
+      // default: uuid4(),
     },
     fullName: {
       type: String,
@@ -101,7 +101,7 @@ const campRegistrationSchema = new mongoose.Schema(
       },
       paymentStatus: {
         type: String,
-        default: null
+        default: 'Not Payed'
       },
       reference: {
         type: String,
@@ -111,18 +111,19 @@ const campRegistrationSchema = new mongoose.Schema(
         type: String,
         default: null
       },
+      paymentTime: {
+        type: String,
+      },
     },
   },
   { timestamps: true }
 );
 
 campRegistrationSchema.pre("save", function (next) {
+  this.uniqueID = generateUniqueId(this.archdeaconry);
   if (this.denomination === "Non-Anglican") {
-    this.uniqueID = uuid4();
     this.archdeaconry = null;
     this.parish = null;
-  } else {
-    this.uniqueID = generateUniqueId(this.archdeaconry);
   }
   next();
 });

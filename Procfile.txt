@@ -1,0 +1,2 @@
+web: node app.js          # This runs your main Node.js API (or whichever file starts the server)
+worker: node tasks.js      # This runs your Celery worker (task processing script)
