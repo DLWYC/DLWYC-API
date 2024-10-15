@@ -56,6 +56,7 @@ routes.get("/:reference", cors(), async (req, res) => {
       });
   } catch (err) {
     const error = errorHandling(err);
+    console.log(error)
     res.status(400).json({ errors: error });
   }
 });
@@ -64,40 +65,17 @@ routes.get("/:reference", cors(), async (req, res) => {
 
 
 routes.post("/", cors(), async (req, res) => {
-  const {
-    fullName,
-    email,
-    phoneNumber,
-  } = req.body;
-  const payStackData = {
-    email: email,
-    amount: 5000 * 100,
-    reference: new Date().getTime().toString(),
-    callback_url: "http://localhost:5173/payment/successful",
-    metadata: {
-      custom_fields: [
-        {
-          display_name: "first_name",
-          variable_name: "first_name",
-          value: fullName,
-        },
-        {
-          display_name: "PhoneNumber",
-          variable_name: "phone",
-          value: phoneNumber,
-        },
-      ],
-    },
-  };
+  
+  const {email, paymentUrl} = req.body
 
   const checkIfUserHasPayedBefore = await campersModel.findOne({"email": email, "payment.paymentStatus": "success"})
   
   if(checkIfUserHasPayedBefore === null){
       try {
-      console.log("first")
-        const detail = await initializeTransaction(payStackData)
-        res.status(200).json(detail)
-        // console.log(detail)
+      console.log("first" + paymentUrl)
+        
+        res.status(200).json({message: "Payment Initialized", paymentUrl: paymentUrl})
+        console.log(`fro payment.js ${paymentUrl}`)
       } catch (error) {
         const err = await errorHandling(error);
         console.log(err);

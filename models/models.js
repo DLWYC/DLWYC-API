@@ -95,6 +95,9 @@ const campRegistrationSchema = new mongoose.Schema(
       default: true,
     },
     payment: {
+      paymentOption: {
+        type: String
+      },
       paymentID: {
         type: Number,
         default: null
@@ -124,6 +127,7 @@ campRegistrationSchema.pre("save", function (next) {
   if (this.denomination === "Non-Anglican") {
     this.archdeaconry = null;
     this.parish = null;
+    this.payment.paymentOption = "Single"
   }
   next();
 });
