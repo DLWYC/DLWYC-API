@@ -13,7 +13,6 @@ routes.get("/", async (req, res) => {
 });
 
 routes.post("/", cors(), async (req, res) => {
-//   let payStackData;
   const {
     fullName,
     email,
@@ -29,7 +28,8 @@ routes.post("/", cors(), async (req, res) => {
     noOfCampersToPayFor,
   } = await req.body;
 
-//   console.log(`Total Nuerv ${noOfCampersToPayFor}`)
+
+
   // ## Data to be registered
   const userData = {
     fullName: fullName,
@@ -44,12 +44,14 @@ routes.post("/", cors(), async (req, res) => {
     },
   };
 
+
   const paymentData = {
     email: email,
     reference: new Date().getTime().toString(),
     callback_url: "http://localhost:5174/payment/successful",
   };
 
+     // PAYMENT PRICE PLAN
   if (paymentOption === "Multiple") {
     payStackData = {
       ...paymentData,
@@ -65,16 +67,18 @@ routes.post("/", cors(), async (req, res) => {
     };
   }
   else{
-     payStackData = {...paymentData, amount: 500 * 100};
+     payStackData = {...paymentData, amount: 5000 * 100};
   }
 
-  console.log("Payment" + payStackData.amount)
 
+
+//   TRY && CATCH
   try {
+
     const paymentPortal = await initializeTransaction(payStackData);
     const paymentURL = paymentPortal.data.authorization_url;
     let camper;
-    console.log(paymentPortal, paymentURL);
+//     console.log(paymentPortal, paymentURL);
 
     if (denomination === "Non-Anglican") {
       camper = await new campersModel(userData);
@@ -86,39 +90,47 @@ routes.post("/", cors(), async (req, res) => {
       });
     }
 
-    await campersModel
-      .create(camper)
+
+    // ##    Store the User Data in the DB
+    await campersModel.create(camper)
       .then(async (d) => {
-     //    console.log("reg success");
 
         // Send This details to the celery worker to send the email
         const task = client.sendTask("tasks.sendRegistrationEmail", [
-          {
-            email: d.email,
-            uniqueID: d.uniqueID,
-            fullName: d.fullName,
-            archdeaconry: d.archdeaconry,
-            parish: d.parish,
-          },
-        ]);
-        task
+             {
+                  email: d.email,
+                  uniqueID: d.uniqueID,
+                  fullName: d.fullName,
+                  archdeaconry: d.archdeaconry,
+                  parish: d.parish,
+                  paymentURL: paymentURL,
+               },
+          ]);
+          task
           .get()
           .then((response) => {
-            console.log(`response from Worker ${response}`);
+               console.log(`response from Worker ${response}`);
           })
           .catch((err) => {
-            console.log(`Error in FE fron Worker ${err}`);
+               console.log(`Error in FE fron Worker ${err}`);
           });
-        // Send This details to the celery worker to send the email
+          // Send This details to the celery worker to send the email
+
         res.status(200).json({ message: "Registration Successful", paymentUrl: paymentURL });
       })
       .catch((err) => {
         throw err;
       });
+
+
+
   } catch (err) {
     const error = errorHandling(err);
     res.status(400).json({ errors: error });
   }
+//   TRY && CATCH
+
+
 });
 
 module.exports = routes;

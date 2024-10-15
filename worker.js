@@ -94,7 +94,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
 });
 
 worker.register("tasks.sendRegistrationEmail", async (args, task) => {
-  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL } = args;
+  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL, } = args;
   console.log(args);
 
   const mailOptions = {

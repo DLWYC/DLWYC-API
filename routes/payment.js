@@ -12,6 +12,7 @@ const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
 
 
 routes.get("/:reference", cors(), async (req, res) => {
+  let data
   const reference = req.params.reference;
   try {
     await paystack.transaction
@@ -21,12 +22,14 @@ routes.get("/:reference", cors(), async (req, res) => {
         const paymentStatus = await response.data.status;
         const paymentTime = await response.data.paid_at;
         const email = await response.data.customer.email;
+        const campers = await response.data.metadata.custom_fields[0].variable_name
           //  console.log(email, paymentMode, paymentStatus, paymentTime); 
+        console.log(campers)
 
         if (response.data.status === "success") {
-        const d =  await campersModel.findOneAndUpdate(
-            { "email": email },
-            {
+
+          data =  await campersModel.findOneAndUpdate(
+            { "email": email}, {
               $set: {
                 "payment.modeOfPayment": paymentMode,
                 "payment.reference": reference,
@@ -37,8 +40,22 @@ routes.get("/:reference", cors(), async (req, res) => {
             {new: true, upsert: false}
           );
 
+        campers.forEach( async camper =>{
+          data =  await campersModel.updateMany(
+            {uniqueID: camper.value}, {
+              $set: {
+                "payment.modeOfPayment": paymentMode,
+                "payment.reference": reference,
+                "payment.paymentStatus": paymentStatus,
+                "payment.paymentTime": paymentTime,
+              },
+            },
+            {new: true, upsert: false}
+          );
+        })
+
           // Send This details to the celery worker to send the email
-          const task = client.sendTask('tasks.sendPaymentEmail', [{email: d.email, uniqueID: d.uniqueID  ,fullName: d.fullName}]);
+          const task = client.sendTask('tasks.sendPaymentEmail', [{email: data.email, uniqueID: data.uniqueID  ,fullName: data.fullName}]);
           task.get().then(response=>{
                console.log(`response from Worker ${response}`)
           })
