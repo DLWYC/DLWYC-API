@@ -1,11 +1,13 @@
+require("dotenv").config();
 const express = require("express");
 const routes = express.Router();
 const { campersModel } = require("../models/models");
 const cors = require("cors");
 const { errorHandling } = require("../controllers/errorHandler");
 const celery = require("celery-node");
-const client = celery.createClient("amqp://", "amqp://");
+const client = celery.createClient(process.env.BROKER_URL, process.env.BROKER_URL)
 const { initializeTransaction } = require("../utils/initializeTransaction");
+
 
 routes.get("/", async (req, res) => {
   campers = await campersModel.find();
@@ -55,7 +57,7 @@ routes.post("/", cors(), async (req, res) => {
   if (paymentOption === "Multiple") {
     payStackData = {
       ...paymentData,
-      amount: (5000 * 100) * noOfCampersToPayFor,
+      amount: (5000 * 100) * noOfCampersToPayFor + (5000 * 100),  //So this will also add the person paying with the number of people to payfor
       metadata: {
         custom_fields: [
           {

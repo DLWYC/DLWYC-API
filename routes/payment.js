@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const routes = express.Router();
 const cors = require("cors");
@@ -5,7 +6,7 @@ const { errorHandling } = require("../controllers/errorHandler");
 const { campersModel } = require("../models/models");
 const axios = require("axios");
 const celery = require('celery-node')
-const client = celery.createClient('amqp://', 'amqp://')
+const client = celery.createClient(process.env.BROKER_URL, process.env.BROKER_URL)
 const {initializeTransaction} = require('../utils/initializeTransaction')
 const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
 
@@ -24,7 +25,7 @@ routes.get("/:reference", cors(), async (req, res) => {
         const email = await response.data.customer.email;
         const campers = await response.data.metadata.custom_fields[0].variable_name
           //  console.log(email, paymentMode, paymentStatus, paymentTime); 
-        console.log(campers)
+        console.log(response)
 
         if (response.data.status === "success") {
 

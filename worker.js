@@ -3,7 +3,8 @@ const celery = require("celery-node");
 const nodemailer = require("nodemailer");
 const { errorHandling } = require("./controllers/errorHandler");
 
-const worker = celery.createWorker();
+const worker = celery.createWorker(process.env.BROKER_URL, process.env.BROKER_URL);
+
 
 // ## To Create & Connect The Network Successfuly
 const transporter = nodemailer.createTransport({
