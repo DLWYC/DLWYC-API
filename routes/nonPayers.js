@@ -7,7 +7,7 @@ router.get('/', async(req,res)=>{
      const campers = await campersModel.find({'parish': parish, 'payment.paymentOption': 'Church Sponsored', 'payment.paymentStatus': 'Not Payed'})
 
      res.json(campers)
-     console.log(campers, parish)
+     console.log("Request made To Get the List of Unpaid Campers")
 })
 
 

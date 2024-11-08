@@ -85,9 +85,9 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
       error.message.include("Unexpected socket close") ||
       error.message.include("connect ENETUNREACH 173.194.79.109:465")
     ) {
-      throw new Error("Temporary Network issues, retrying....");
+      console.log("Temporary Network issues, retrying....");
     } else {
-      throw error;
+      console.log(error);
     }
   }
 

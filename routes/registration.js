@@ -14,6 +14,9 @@ routes.get("/", async (req, res) => {
   res.json(campers);
 });
 
+
+
+
 routes.post("/", cors(), async (req, res) => {
   const {
     fullName,
@@ -80,7 +83,7 @@ routes.post("/", cors(), async (req, res) => {
     const paymentPortal = await initializeTransaction(payStackData);
     const paymentURL = paymentPortal.data.authorization_url;
     let camper;
-//     console.log(paymentPortal, paymentURL);
+    console.log(paymentPortal, paymentURL);
 
     if (denomination === "Non-Anglican") {
       camper = await new campersModel(userData);
@@ -128,7 +131,7 @@ routes.post("/", cors(), async (req, res) => {
 
   } catch (err) {
     const error = errorHandling(err);
-    res.status(400).json({ errors: error });
+    res.status(400).json({ errors: error, message: 'Input Errors' });
   }
 //   TRY && CATCH
 
