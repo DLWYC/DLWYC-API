@@ -4,19 +4,6 @@ const app = express()
 const cors = require('cors')
 const PORT = process.env.PORT || 5000
 const mongoose = require('mongoose')
-const celery = require('celery-node')
-
-
-
-
-// const worker = celery.createWorker("redis://","redis://")
-
-// worker.register('tasks.add', (a, b) => a + b);
-
-// worker.start()
-
-
-
 
 
 // # :::::: This will allow json data to be passed ::::::
@@ -37,14 +24,21 @@ mongoose.connect(process.env.DB_URL)
 
 // # :::::: Routes ::::::
 const registration = require('./routes/registration')
+const payment = require('./routes/payment')
+const unPaidCampers = require('./routes/nonPayers')
 
 
 
 // # :::::: API ROUTES ::::::
 app.use('/api/registration', registration)
-
+app.use('/api/payment', payment)
+app.use('/api/unPaidCampers', unPaidCampers)
 
 
 app.listen(PORT, ()=>{
      console.log(`Connection Successful ${PORT}`)
 })
+
+// server.listen(8080, '127.0.0.1', () => {
+//      console.log('TCP Server running at http://127.0.0.1:8080/');
+//  });
