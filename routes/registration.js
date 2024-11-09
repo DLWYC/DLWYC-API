@@ -53,7 +53,7 @@ routes.post("/", cors(), async (req, res) => {
   const paymentData = {
     email: email,
     reference: new Date().getTime().toString(),
-    callback_url: "http://localhost:5174/payment/successful",
+    callback_url: "https://dlwyc.vercel.app/payment/successful",
   };
 
      // PAYMENT PRICE PLAN
