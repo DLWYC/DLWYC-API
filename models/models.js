@@ -23,7 +23,6 @@ const campRegistrationSchema = new mongoose.Schema(
       type: String,
       required: [true, "Please Enter Your Email"],
       lowercase: true,
-      unique: true,
       validate: [isEmail, "Please Enter A Valid Email"],
     },
     phoneNumber: {
