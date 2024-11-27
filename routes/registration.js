@@ -18,45 +18,25 @@ routes.get("/", async (req, res) => {
 
 
 routes.post("/", cors(), async (req, res) => {
-  const {
-    fullName,
-    email,
-    phoneNumber,
-    gender,
-    archdeaconry,
-    parish,
-    age,
-    camperType,
-    denomination,
-    paymentOption,
-    noOfUnpaidCampersOption,
-    noOfCampersToPayFor,
+  const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, camperType, denomination, paymentOption, noOfUnpaidCampersOption, noOfCampersToPayFor,
   } = await req.body;
 
 
 
   // ## Data to be registered
-  const userData = {
-    fullName: fullName,
-    email: email,
-    phoneNumber: phoneNumber,
-    gender: gender,
-    age: age,
-    camperType: camperType,
-    denomination: denomination,
-    payment: {
-      paymentOption: paymentOption,
-    },
+  const userData = { fullName: fullName, email: email, phoneNumber: phoneNumber, gender: gender, age: age, camperType: camperType, denomination: denomination, payment: {   paymentOption: paymentOption, },
   };
 
 
   const paymentData = {
     email: email,
     reference: new Date().getTime().toString(),
+    // callback_url: "http://localhost:5173/payment/successful",
     callback_url: "https://dlwyouth.org/payment/successful",
   };
 
-     // PAYMENT PRICE PLAN
+
+// ########  PAYMENT PRICE PLAN ########
   if (paymentOption === "Multiple") {
     payStackData = {
       ...paymentData,
@@ -74,17 +54,22 @@ routes.post("/", cors(), async (req, res) => {
   else{
      payStackData = {...paymentData, amount: 5000 * 100};
   }
-
+// ########  PAYMENT PRICE PLAN ########
 
 
 //   TRY && CATCH
   try {
 
     const paymentPortal = await initializeTransaction(payStackData);
-    const paymentURL = paymentPortal.data.authorization_url;
     let camper;
-    console.log(paymentPortal, paymentURL);
+    let paymentURL
 
+    if(paymentPortal.data && paymentPortal.data.authorization_url){
+      paymentURL = paymentPortal.data.authorization_url;
+    }
+
+
+    //  ########## Collation of user Info
     if (denomination === "Non-Anglican") {
       camper = await new campersModel(userData);
     } else {
@@ -94,43 +79,45 @@ routes.post("/", cors(), async (req, res) => {
         parish: parish,
       });
     }
+    //  ########## Collation of user Info
 
 
-    // ##    Store the User Data in the DB
-    await campersModel.create(camper)
-      .then(async (d) => {
-
-        // Send This details to the celery worker to send the email
-        const task = client.sendTask("tasks.sendRegistrationEmail", [
-             {
-                  email: d.email,
-                  uniqueID: d.uniqueID,
-                  fullName: d.fullName,
-                  archdeaconry: d.archdeaconry,
-                  parish: d.parish,
-                  paymentURL: paymentURL,
-               },
-          ]);
-          task
-          .get()
-          .then((response) => {
-               console.log(`response from Worker ${response}`);
-          })
-          .catch((err) => {
-               console.log(`Error in FE fron Worker ${err}`);
-          });
+    // ########### Store the User Data in the DB
+      await campersModel.create(camper)
+        .then(async (d) => {
+  
           // Send This details to the celery worker to send the email
-
-        res.status(200).json({ message: "Registration Successful", paymentUrl: paymentURL });
-      })
-      .catch((err) => {
-        throw err;
-      });
+          const task = client.sendTask("tasks.sendRegistrationEmail", [
+               {
+                    email: d.email,
+                    uniqueID: d.uniqueID,
+                    fullName: d.fullName,
+                    archdeaconry: d.archdeaconry,
+                    parish: d.parish,
+                    paymentURL: paymentURL,
+                 },
+            ]);
+            task
+            .get()
+            .then((response) => {
+                 console.log(`response from Worker ${response}`);
+            })
+            .catch((err) => {
+                 console.log(`Error in FE fron Worker ${err}`);
+            });
+            // Send This details to the celery worker to send the email
+  
+          res.status(200).json({ message: "Registration Successful", paymentUrl: paymentURL });
+        })
+        .catch((err) => {
+          throw err;
+        });
 
 
 
   } catch (err) {
     const error = errorHandling(err);
+    console.log(error)
     res.status(400).json({ errors: error, message: 'Input Errors' });
   }
 //   TRY && CATCH

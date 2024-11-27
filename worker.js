@@ -39,7 +39,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "Camp Registration",
+    subject: "DLWYC Camp Registration VERIFICATION MAIL",
     html: `
           <div>
           <b>THANK YOU FOR SUCCESSFULLY REGISTERING FOR THE 2024 DIOCESAN YOUTH CONFERENCE.</b>
@@ -64,7 +64,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
           ......................
 
           <p>
-          Please kindly note that your <b>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily.
+          Dear ${fullName} Please kindly note that your <b>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily.
 
           Remain Blessed & See You There
           </p>
@@ -101,7 +101,7 @@ worker.register("tasks.sendRegistrationEmail", async (args, task) => {
   const mailOptions = {
     from: process.env.EMAIL,
     to: email,
-    subject: "Camp Registration Email",
+    subject: "2024 Camp Registration ",
     html: `
           <div>
           <b>THANK YOU FOR SUCCESSFULLY REGISTERING TO BECOME A PART OF THE DIOCESE OF LAGOS WEST YOUTH CHAPLAINCY FAMILY.</b>
@@ -123,7 +123,6 @@ worker.register("tasks.sendRegistrationEmail", async (args, task) => {
           <p>
          <span> Please kindly note that your <b style='color: red; font-weight: bold;'>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily. </span>
 
-         <span> Click The Link Below To Proceed To Make Payment For This Year Camp <b style='color: red; font-weight: bold;'> <a href=${paymentURL}>Click Here</a> </b> is for you alone and it can be use to register for subsequent events easily. </span>
 
           Remain Blessed & See You There
           </p>
@@ -154,3 +153,5 @@ worker.register("tasks.sendRegistrationEmail", async (args, task) => {
 });
 
 worker.start();
+
+// <span> Click The Link Below To Proceed To Make Payment For This Year Camp <b style='color: red; font-weight: bold;'> <a href=${paymentURL}>Click Here</a> </b> is for you alone and it can be use to register for subsequent events easily. </span>

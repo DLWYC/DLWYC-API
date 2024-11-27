@@ -38,7 +38,3 @@ app.use('/api/unPaidCampers', unPaidCampers)
 app.listen(PORT, ()=>{
      console.log(`Connection Successful ${PORT}`)
 })
-
-// server.listen(8080, '127.0.0.1', () => {
-//      console.log('TCP Server running at http://127.0.0.1:8080/');
-//  });
