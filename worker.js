@@ -2,7 +2,6 @@ require("dotenv").config();
 const celery = require("celery-node");
 const nodemailer = require("nodemailer");
 const { errorHandling } = require("./controllers/errorHandler");
-
 const worker = celery.createWorker(process.env.BROKER_URL, process.env.BROKER_URL);
 
 
@@ -64,7 +63,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
           ......................
 
           <p>
-          Dear ${fullName} Please kindly note that your <b>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily.
+          Dear <span style='color: red; font-weight: bold;'> ${fullName} </span> Please kindly note that your <span style='color: red; font-weight: bold;'> UNIQUE ID: ${uniqueID} </span> is for you alone and it can be use to register for subsequent events easily.
 
           Remain Blessed & See You There
           </p>

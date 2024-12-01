@@ -35,6 +35,7 @@ routes.get("/:reference/:paymentOption", cors(), async (req, res) => {
           campers = response.data.metadata.custom_fields[0].variable_name;
         }
 
+        // console.log(paymentDetails)
 
         if (response.data.status === "success") {
           // If it is a single picked eg. No Other Campers
@@ -74,15 +75,14 @@ routes.get("/:reference/:paymentOption", cors(), async (req, res) => {
               ]);
 
             // All the other campers to eb paied for
-            campers.forEach((camper) => {
-              campersModel.updateMany(
+           campers.forEach(async camper => {
+             await campersModel.updateMany(
                 { uniqueID: camper.value },
                 {
                   $set: paymentDetails,
                 },
                 { new: true, upsert: false }
               );
-
               client.sendTask("tasks.sendPaymentEmail", [
                 {
                   email: camper.email,
@@ -95,9 +95,6 @@ routes.get("/:reference/:paymentOption", cors(), async (req, res) => {
 
            
           }
-
-      // console.log(`data ${data}`);
-      // console.log(data);
 
      
       // Send This details to the celery worker to send the email
@@ -112,8 +109,7 @@ routes.get("/:reference/:paymentOption", cors(), async (req, res) => {
 
   } 
   
-  
-  
+
   catch (err) {
     const error = errorHandling(err);
     console.log(error);

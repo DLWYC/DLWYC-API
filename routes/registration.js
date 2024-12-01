@@ -31,7 +31,7 @@ routes.post("/", cors(), async (req, res) => {
   const paymentData = {
     email: email,
     reference: new Date().getTime().toString(),
-    // callback_url: "http://localhost:5173/payment/successful",
+    // callback_url: "http://localhost:5174/payment/successful",
     callback_url: "https://dlwyouth.org/payment/successful",
   };
 
