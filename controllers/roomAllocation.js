@@ -81,7 +81,7 @@ function allocateHostels(name, age, gender){
 
     // console.log('The Total Room', hostelRooms)
     // console.log('The Allocated Room', randomlySelectRoom)
-    // console.log('The Available Room', availableRooms)
+    console.log('The Available Room', availableRooms)
 
     return {
       message: `Successfully Allocated ${name} to ${randomlySelectRoom.room}`,

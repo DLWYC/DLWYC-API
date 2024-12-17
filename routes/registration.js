@@ -21,8 +21,8 @@ routes.get("/", async (req, res) => {
 routes.post("/", cors(), async (req, res) => {
   const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, camperType, denomination, paymentOption, noOfUnpaidCampersOption, noOfCampersToPayFor,
   } = await req.body;
-  // const allocatedRoom = allocateHostels(fullName, age, gender)
-  // console.log(allocatedRoom)
+  const allocatedRoom = allocateHostels(fullName, age, gender)
+  console.log(allocatedRoom)
 
 
   // ## Data to be registered
