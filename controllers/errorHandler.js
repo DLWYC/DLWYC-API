@@ -1,11 +1,16 @@
 const errorHandling = (err) =>{
-     console.log(err)
+     console.log("wewe", err)
      const error = {}
      
      // Validation Error
      if(err.code === 11000){
           error['email'] = "This Email Has Been Registered Before"
      }
+     if (err.message === "Email is required.") {
+        error['email'] = err.message;
+    } else if (err.message === "Password is required.") {
+        error['password'] = err.message;
+    }
      else if(err.message.includes('camper validation failed')){
           Object.values(err.errors).forEach(({properties})=>{
                // # If the error has options

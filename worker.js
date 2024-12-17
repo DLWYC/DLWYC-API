@@ -2,8 +2,10 @@ require("dotenv").config();
 const celery = require("celery-node");
 const nodemailer = require("nodemailer");
 const { errorHandling } = require("./controllers/errorHandler");
-const worker = celery.createWorker(process.env.BROKER_URL, process.env.BROKER_URL);
-
+const worker = celery.createWorker(
+  process.env.BROKER_URL,
+  process.env.BROKER_URL
+);
 
 // ## To Create & Connect The Network Successfuly
 const transporter = nodemailer.createTransport({
@@ -63,7 +65,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
           ......................
 
           <p>
-          Dear <span style='color: red; font-weight: bold;'> ${fullName} </span> Please kindly note that your <span style='color: red; font-weight: bold;'> UNIQUE ID: ${uniqueID} </span> is for you alone and it can be use to register for subsequent events easily.
+          Dear <span style='color: #AB0606; font-weight: bold;'> ${fullName} </span> Please kindly note that your <span style='color: #AB0606; font-weight: bold;'> UNIQUE ID: ${uniqueID} </span> is for you alone and it can be use to register for subsequent events easily.
 
           Remain Blessed & See You There
           </p>
@@ -94,7 +96,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
 });
 
 worker.register("tasks.sendRegistrationEmail", async (args, task) => {
-  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL, } = args;
+  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL } = args;
   console.log(args);
 
   const mailOptions = {
@@ -106,28 +108,55 @@ worker.register("tasks.sendRegistrationEmail", async (args, task) => {
           <b>THANK YOU FOR SUCCESSFULLY REGISTERING TO BECOME A PART OF THE DIOCESE OF LAGOS WEST YOUTH CHAPLAINCY FAMILY.</b>
 
           <p>
-               Please Do Well To Note The Following Information Below As They Will Be Used To <span style='color: red; font-weight: bold;' >Uniquely</span> Identify You As A Member Of DLWYC
+               Please Do Well To Note The Following Information Below As They Will Be Used To <span style='color: #AB0606; font-weight: bold;' >Uniquely</span> Identify You As A Member Of DLWYC
           </p>
 
           <br/>
 
           <b> Here are your details: </b>
           <ol>
-            <li>UNIQUE ID: ${uniqueID}</li>
+            <li style='color: #AB0606; font-weoght: bold;'>UNIQUE ID: ${uniqueID}</li>
             <li>NAME : ${fullName}</li>  
-            ${archdeaconry === null ? ("") : `<li>ARCHDEACONRY: ${archdeaconry}</li>`} 
-            ${archdeaconry === null ? ("") : `<li>PARISH: ${parish}</li>`} 
+            ${
+              archdeaconry === null
+                ? ""
+                : `<li>ARCHDEACONRY: ${archdeaconry}</li>`
+            } 
+            ${archdeaconry === null ? "" : `<li>PARISH: ${parish}</li>`} 
           </ol>
            
           <p>
-         <span> Please kindly note that your <b style='color: red; font-weight: bold;'>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily. </span>
-
-
-          Remain Blessed & See You There
+         <span> Please kindly note that your <b style='color: #AB0606; font-weight: bold;'>UNIQUE ID: ${uniqueID} </b> is for you alone and it can be use to register for subsequent events easily. </span>
           </p>
+          
+          <br/>
+                    
+          <p style='color: red; font-size: 20px;'>  Also, do not forget your sport gear for sports and cultural outfits for the CULTURAL/ VARIETY NIGHT🤗
+
+Most importantly, come along with your plates and cutleries 🍽....... 
+
+You’re welcome😉
+</p>
+
+
+<b> <span style='color: #AB0606'>CHECKLIST:</span> For the “first timers” and the “I don’t know what to pack😩” amongst us🌚👀, relax! We’ve got you covered😉
+</b>
+          
+          <br/>
+          <br/>
+          <img src='cid:${email}' style="width: 400px; height: auto;"/>
+          
+          <br/>
           <b> DIOCESAN YOUTH CHAPLAINCY <b/>
           </div>
           `,
+    attachments: [
+      {
+        filename: "checklist.png",
+        path: "assets/checklist.jpg",
+        cid: email,
+      },
+    ],
   };
 
   try {
@@ -153,4 +182,4 @@ worker.register("tasks.sendRegistrationEmail", async (args, task) => {
 
 worker.start();
 
-// <span> Click The Link Below To Proceed To Make Payment For This Year Camp <b style='color: red; font-weight: bold;'> <a href=${paymentURL}>Click Here</a> </b> is for you alone and it can be use to register for subsequent events easily. </span>
+// <span> Click The Link Below To Proceed To Make Payment For This Year Camp <b style='color: #AB0606; font-weight: bold;'> <a href=${paymentURL}>Click Here</a> </b> is for you alone and it can be use to register for subsequent events easily. </span>

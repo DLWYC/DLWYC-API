@@ -6,6 +6,7 @@ const {
   isAlphanumeric,
 } = require("validator");
 const { v4: uuid4 } = require("uuid");
+const bcrypt = require('bcrypt')
 const { generateUniqueId } = require("../controllers/UniqueNumberGen");
 
 //# Registration Schema & Model
@@ -117,6 +118,13 @@ const campRegistrationSchema = new mongoose.Schema(
         type: String,
       },
     },
+    checkStatus: {
+      type: Boolean,
+      default: false
+    },
+    allocatedRoom: {
+      type: String
+    }
   },
   { timestamps: true }
 );
@@ -131,6 +139,36 @@ campRegistrationSchema.pre("save", function (next) {
   next();
 });
 
-const campersModel = new mongoose.model("camper", campRegistrationSchema);
 
-module.exports = { campersModel };
+
+// Admin
+const AdminSchema = new mongoose.Schema(
+  {
+    fullName: {
+      type: String,
+      required: [true, "Please Enter Your Full Name"],
+      lowercase: true,
+    },
+    email: {
+      type: String,
+      required: [true, "Please Enter Your Email"],
+      lowercase: true,
+      validate: [isEmail, "Please Enter A Valid Email"],
+    },
+    password: {
+      type: String,
+      required: [true, "Please Enter Your Password"],
+    },
+  },
+  { timestamps: true }
+);
+
+AdminSchema.pre('save', async function(next){
+     const saltRounds = await bcrypt.genSalt()
+     this.password = await bcrypt.hash(this.password, saltRounds)
+     next()
+})
+
+const campersModel = new mongoose.model("camper", campRegistrationSchema);
+const adminModel = new mongoose.model("admin", AdminSchema);
+module.exports = { campersModel, adminModel };

@@ -1,219 +1,96 @@
-// // Define the youth data with their ages
-// const youth = [
-//     { name: 'John', age: 18 },
-//     { name: 'Jane', age: 29 },
-//     { name: 'Bob', age: 29 },
-//     { name: 'Alice', age: 21 },
-// //     { name: 'Mike', age: 18 },
-// //     { name: 'Emma', age: 23 },
-// //     { name: 'Tom', age: 20 },
-// //     { name: 'Sophia', age: 19 },
-//     // Add more youth data here...
-//   ];
-  
-//   // Define the age groups
-//   const ageGroups = [
-//     { min: 18, max: 30 },
-//     // Add more age groups here...
-//   ];
-  
-//   // Define the room capacity
-//   const roomCapacity = 4;
-  
-//   // Function to allocate rooms
-//   function allocateRooms(youth) {
-//     // Sort the youth by age in descending order
-//     youth.sort((a, b) => b.age - a.age);
-  
-//     // Initialize the rooms array
-//     const rooms = [
-//         { name: 'John', age: 18 },
-//     { name: 'Jane', age: 29 },
-//     { name: 'Bob', age: 29 },
-//     { name: 'Alice', age: 21 },
-//     ];
-  
-//     // Loop through the age groups
-//     for (const ageGroup of ageGroups) {
-//       // Filter the youth by age group
-//       const ageGroupYouth = youth.filter((y) => y.age >= ageGroup.min && y.age <= ageGroup.max);
-  
-//       // Loop through the filtered youth
-//       for (let i = 0; i < ageGroupYouth.length; i += roomCapacity) {
-//         // Create a new room
-//         const room = ageGroupYouth.slice(i, i + roomCapacity);
-  
-//         // Select the eldest as the room head
-//         room.head = room[0];
-  
-//         // Add the room to the rooms array
-//         rooms.push(room);
-//       }
-//     }
-// //     console.log(`ROMMMMFDMJDNF: ${rooms}`)
-//     return rooms;
-//   }
-  
-//   // Call the function and log the result
-//   const allocatedRooms = allocateRooms(youth);
-//   console.log(allocatedRooms);
+const hostelRooms = {
+  male: [
+    { room: "HABOR", capacity: 16, allocated: 0 },
+    { room: "DEUEL", capacity: 34, allocated: 0 },
+    { room: "EBENEZER", capacity: 44, allocated: 0 },
+    { room: "NATHAN", capacity: 34, allocated: 0 },
+    { room: "HOSANNA", capacity: 4, allocated: 0 },
+    { room: "PHANUEL", capacity: 4, allocated: 0 },
+    { room: "PORATHA", capacity: 4, allocated: 0 },
+    { room: "HANIEL", capacity: 4, allocated: 0 },
+    { room: "RABBI", capacity: 4, allocated: 0 },
+    { room: "MIBHAR", capacity: 4, allocated: 0 },
+    { room: "IMMANUEAL", capacity: 4, allocated: 0 },
+    { room: "MELCHI", capacity: 4, allocated: 0 },
+    { room: "DANIEL", capacity: 2, allocated: 0 },
+    { room: "HENOCH", capacity: 4, allocated: 0 },
+    { room: "JAASIEL", capacity: 4, allocated: 0 },
+    { room: "JUDAH", capacity: 4, allocated: 0 },
+    { room: "PETHUEL", capacity: 4, allocated: 0 },
+    { room: "HANANEEL", capacity: 4, allocated: 0 },
+    { room: "HENOCH", capacity: 4, allocated: 0 },
+    { room: "PENIEL", capacity: 4, allocated: 0 },
+    { room: "BETH-MEON", capacity: 4, allocated: 0 },
+    { room: "ISAAC", capacity: 4, allocated: 0 },
+    { room: "ISAIAH", capacity: 4, allocated: 0 },
+    { room: "ISRAEL", capacity: 4, allocated: 0 },
+    { room: "JAAZIAH", capacity: 4, allocated: 0 },
+    { room: "CHILIAB", capacity: 4, allocated: 0 },
+    { room: "JABNEEL", capacity: 4, allocated: 0 },
+    { room: "PENINNAH", capacity: 4, allocated: 0 },
+    { room: "DARDA", capacity: 4, allocated: 0 },
+    { room: "GABRIEL", capacity: 4, allocated: 0 },
+    { room: "JAHAZIAH", capacity: 4, allocated: 0 },
+    { room: "CONIAH", capacity: 4, allocated: 0 },
+    { room: "RABBAH", capacity: 4, allocated: 0 },
+    { room: "JAAZAH", capacity: 4, allocated: 0 },
+    { room: "RAGUEL", capacity: 4, allocated: 0 },
+    { room: "PELATIAH", capacity: 4, allocated: 0 },
+    { room: "ABRAHAM", capacity: 8, allocated: 0 },
+    { room: "GOMER", capacity: 8, allocated: 0 },
+    { room: "ABIMAEL", capacity: 4, allocated: 0 },
+    { room: "KOLARIAH", capacity: 4, allocated: 0 },
+    { room: "KEMUEL", capacity: 4, allocated: 0 },
+    { room: "REHOBOTH", capacity: 4, allocated: 0 },
+    { room: "ISHMAIAH", capacity: 4, allocated: 0 },
+    { room: "MELECH", capacity: 4, allocated: 0 },
+    { room: "NABOTH", capacity: 4, allocated: 0 },
+    { room: "OBADIAH", capacity: 4, allocated: 0 },
+    { room: "ISHMAEL", capacity: 4, allocated: 0 },
+    { room: "ELADAH", capacity: 4, allocated: 0 },
+    { room: "DARAH", capacity: 4, allocated: 0 },
+    { room: "MALCHUS", capacity: 4, allocated: 0 },
+    { room: "HAGGITH", capacity: 4, allocated: 0 },
+    { room: "HANAN", capacity: 4, allocated: 0 },
+    { room: "KABZEEL", capacity: 4, allocated: 0 },
+  ],
+  female: [
+    { room: "SALEM", capacity: 36, allocated: 0 },
+    { room: "SALMA", capacity: 44, allocated: 0 },
+    { room: "SHILOH", capacity: 40, allocated: 0 },
+    { room: "SABAOTH", capacity: 72, allocated: 0 },
+    { room: "TABEAL", capacity: 72, allocated: 0 },
+    { room: "ROME", capacity: 40, allocated: 0 },
+    { room: "PENINNAH", capacity: 40, allocated: 0 },
+  ],
+};
+
+function allocateHostels(name, age, gender){
+
+  // Checking the Avilable rooms per hostels
+  const availableRooms = hostelRooms[gender.toLowerCase()].filter(
+    (room) => room.allocated < room.capacity
+  );
+
+  // So this function gets all the rooms that still have space for allcation i.e where the number of peple there currently are less that the total number of people that is to be in that room, then i randomizes them e.g avalableRooms = [room a, room b, room c]
+  // and then the randomlySelectedRoom deals with the indexs of the values in teh array of available rooms then picks one and increase the value of allocated room by 1
+  if (availableRooms.length > 0) {
+    const randomlySelectRoom =
+      availableRooms[Math.floor(Math.random() * availableRooms.length)];
+    randomlySelectRoom.allocated += 1;
+
+    console.log('The Total Room', hostelRooms)
+    console.log('The Allocated Room', randomlySelectRoom)
+    console.log('The Available Room', availableRooms)
+
+    return {
+      message: `Successfully Allocated ${name} to ${randomlySelectRoom.room}`,
+      data: randomlySelectRoom,
+    };
+  } else {
+    return { message: `No Available Room For ${name}` };
+  }
+};
 
 
-
-
-// import React, { useState, useEffect } from 'react';
-
-// // Sample Data
-// const sampleYouths = [
-//   { id: 1, name: 'John Doe', age: 20 },
-//   { id: 2, name: 'Jane Smith', age: 22 },
-//   { id: 3, name: 'Alice Brown', age: 18 },
-//   { id: 4, name: 'Bob White', age: 25 },
-//   { id: 5, name: 'Charlie Black', age: 23 },
-//   { id: 6, name: 'David Green', age: 19 },
-// ];
-
-// const sampleRooms = [
-//   { id: 'Room1', capacity: 2 },
-//   { id: 'Room2', capacity: 2 },
-//   { id: 'Room3', capacity: 2 },
-// ];
-
-// const HostelAllocation = () => {
-//   const [youths, setYouths] = useState(sampleYouths);
-//   const [rooms, setRooms] = useState(sampleRooms);
-//   const [allocations, setAllocations] = useState([]);
-
-//   // Function to allocate rooms based on available rooms, youth ages, and room capacity
-//   const allocateRooms = () => {
-//     // Shuffle the youths array to randomize allocation
-//     const shuffledYouths = [...youths].sort(() => Math.random() - 0.5);
-//     let allocatedRooms = [];
-
-//     // Assign youths to rooms
-//     rooms.forEach((room) => {
-//       const roomCapacity = room.capacity;
-//       const assignedYouths = shuffledYouths.splice(0, roomCapacity); // Assign based on room capacity
-
-//       // Find the eldest in the room to make them room head
-//       const eldestYouth = assignedYouths.reduce((eldest, youth) =>
-//         youth.age > eldest.age ? youth : eldest
-//       );
-
-//       allocatedRooms.push({
-//         roomId: room.id,
-//         youths: assignedYouths,
-//         roomHead: eldestYouth,
-//       });
-//     });
-
-//     setAllocations(allocatedRooms);
-//   };
-
-//   return (
-//     <div>
-//       <h2>Hostel Allocation System</h2>
-//       <button onClick={allocateRooms}>Allocate Rooms</button>
-//       {allocations.length > 0 && (
-//         <>
-//           <h3>Allocations</h3>
-//           <ul>
-//             {allocations.map((allocation, index) => (
-//               <li key={index}>
-//                 <strong>Room ID:</strong> {allocation.roomId} <br />
-//                 <strong>Youths:</strong>{' '}
-//                 {allocation.youths.map((youth) => youth.name).join(', ')} <br />
-//                 <strong>Room Head:</strong> {allocation.roomHead.name} ({allocation.roomHead.age} years old)
-//               </li>
-//             ))}
-//           </ul>
-//         </>
-//       )}
-//     </div>
-//   );
-// };
-
-// export default HostelAllocation;
-
-
-
-
-
-
-
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hostel Allocation</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        button {
-            background-color: #0073e6;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #005bb5;
-        }
-    </style>
-</head>
-<body>
-
-    <h2>Hostel Allocation System</h2>
-
-    <button onclick="allocateRooms()">Allocate Rooms</button>
-
-    <h3>Allocation Results</h3>
-    <div id="result"></div>
-
-    <script>
-        // Example data for youths
-        const youths = [
-            { name: 'John', age: 22, gender: 'Male' },
-            { name: 'Sara', age: 21, gender: 'Female' },
-            { name: 'Michael', age: 20, gender: 'Male' },
-            { name: 'Jessica', age: 23, gender: 'Female' },
-            { name: 'David', age: 19, gender: 'Male' }
-        ];
-
-        // Example data for rooms
-        const rooms = [
-            { name: 'Male Room A', capacity: 2, allocated: 0, gender: 'Male' },
-            { name: 'Male Room B', capacity: 3, allocated: 0, gender: 'Male' },
-            { name: 'Female Room A', capacity: 2, allocated: 0, gender: 'Female' },
-            { name: 'Female Room B', capacity: 1, allocated: 0, gender: 'Female' }
-        ];
-
-        function allocateRooms() {
-            let resultDiv = document.getElementById('result');
-            resultDiv.innerHTML = '';  // Clear previous results
-
-            youths.forEach(youth => {
-                // Filter available rooms based on gender
-                let availableRooms = rooms.filter(room => room.gender === youth.gender && room.allocated < room.capacity);
-
-                if (availableRooms.length > 0) {
-                    // Randomly assign a room
-                    let randomRoom = availableRooms[Math.floor(Math.random() * availableRooms.length)];
-                    randomRoom.allocated += 1;
-
-                    // Display the allocation
-                    resultDiv.innerHTML += <p>${youth.name} (${youth.gender}, Age: ${youth.age}) is allocated to ${randomRoom.name}</p>;
-                } else {
-                    resultDiv.innerHTML += <p>No available rooms for ${youth.name} (${youth.gender}, Age: ${youth.age})</p>;
-                }
-            });
-        }
-    </script>
-
-</body>
-</html>
+module.exports = {allocateHostels}

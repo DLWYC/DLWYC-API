@@ -7,6 +7,7 @@ const { errorHandling } = require("../controllers/errorHandler");
 const celery = require("celery-node");
 const client = celery.createClient(process.env.BROKER_URL, process.env.BROKER_URL)
 const { initializeTransaction } = require("../utils/initializeTransaction");
+const {allocateHostels} = require("../controllers/roomAllocation")
 
 
 routes.get("/", async (req, res) => {
@@ -20,63 +21,28 @@ routes.get("/", async (req, res) => {
 routes.post("/", cors(), async (req, res) => {
   const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, camperType, denomination, paymentOption, noOfUnpaidCampersOption, noOfCampersToPayFor,
   } = await req.body;
-
+  const allocatedRoom = allocateHostels(fullName, age, gender)
+  console.log(allocatedRoom)
 
 
   // ## Data to be registered
-  const userData = { fullName: fullName, email: email, phoneNumber: phoneNumber, gender: gender, age: age, camperType: camperType, denomination: denomination, payment: {   paymentOption: paymentOption, },
+  const userData = { fullName: fullName, email: email, phoneNumber: phoneNumber, gender: gender, age: age, camperType: camperType, denomination: denomination,
   };
 
-
-  const paymentData = {
-    email: email,
-    reference: new Date().getTime().toString(),
-    // callback_url: "http://localhost:5174/payment/successful",
-    callback_url: "https://dlwyouth.org/payment/successful",
-  };
-
-
-// ########  PAYMENT PRICE PLAN ########
-  if (paymentOption === "Multiple") {
-    payStackData = {
-      ...paymentData,
-      amount: (5000 * 100) * noOfCampersToPayFor + (5000 * 100),  //So this will also add the person paying with the number of people to payfor
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Name Of Campers Paid For",
-            variable_name: noOfUnpaidCampersOption,
-          },
-        ],
-      },
-    };
-  }
-  else{
-     payStackData = {...paymentData, amount: 5000 * 100};
-  }
-// ########  PAYMENT PRICE PLAN ########
 
 
 //   TRY && CATCH
   try {
 
-    const paymentPortal = await initializeTransaction(payStackData);
-    let camper;
-    let paymentURL
-
-    if(paymentPortal.data && paymentPortal.data.authorization_url){
-      paymentURL = paymentPortal.data.authorization_url;
-    }
-
-
     //  ########## Collation of user Info
     if (denomination === "Non-Anglican") {
-      camper = await new campersModel(userData);
+      camper = await new campersModel({...userData, allocatedRoom: allocatedRoom.data.room});
     } else {
       camper = await new campersModel({
         ...userData,
         archdeaconry: archdeaconry,
         parish: parish,
+        allocatedRoom: allocatedRoom.data.room
       });
     }
     //  ########## Collation of user Info
@@ -86,7 +52,7 @@ routes.post("/", cors(), async (req, res) => {
       await campersModel.create(camper)
         .then(async (d) => {
   
-          // Send This details to the celery worker to send the email
+          // // Send This details to the celery worker to send the email
           const task = client.sendTask("tasks.sendRegistrationEmail", [
                {
                     email: d.email,
@@ -94,7 +60,6 @@ routes.post("/", cors(), async (req, res) => {
                     fullName: d.fullName,
                     archdeaconry: d.archdeaconry,
                     parish: d.parish,
-                    paymentURL: paymentURL,
                  },
             ]);
             task
@@ -105,9 +70,10 @@ routes.post("/", cors(), async (req, res) => {
             .catch((err) => {
                  console.log(`Error in FE fron Worker ${err}`);
             });
-            // Send This details to the celery worker to send the email
+          //   // Send This details to the celery worker to send the email
   
-          res.status(200).json({ message: "Registration Successful", paymentUrl: paymentURL });
+          // res.status(200).json({ message: "Registration Successful", paymentUrl: paymentURL });
+          res.status(200).json({ message: "Registration Successful" });
         })
         .catch((err) => {
           throw err;

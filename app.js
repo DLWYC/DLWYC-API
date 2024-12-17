@@ -26,6 +26,10 @@ mongoose.connect(process.env.DB_URL)
 const registration = require('./routes/registration')
 const payment = require('./routes/payment')
 const unPaidCampers = require('./routes/nonPayers')
+const attendees = require('./routes/attendee')
+
+const dashboardRegister = require('./routes/dashboardRegister')
+const login = require('./routes/login')
 
 
 
@@ -33,7 +37,11 @@ const unPaidCampers = require('./routes/nonPayers')
 app.use('/api/registration', registration)
 app.use('/api/payment', payment)
 app.use('/api/unPaidCampers', unPaidCampers)
+app.use('/api/attendees', attendees)
 
+// Login
+app.use('/api/dashboard/register', dashboardRegister)
+app.use('/api/dashboard/login', login)
 
 app.listen(PORT, ()=>{
      console.log(`Connection Successful ${PORT}`)
