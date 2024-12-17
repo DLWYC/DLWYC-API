@@ -16,7 +16,7 @@ const hostelRooms = {
     { room: "HENOCH", capacity: 4, allocated: 0 },
     { room: "JAASIEL", capacity: 4, allocated: 0 },
     { room: "JUDAH", capacity: 4, allocated: 0 },
-    { room: "PETHUEL", capacity: 4, allocated: 0 },
+    { room: "PETHUEL", capacity: 8, allocated: 0 },
     { room: "HANANEEL", capacity: 4, allocated: 0 },
     { room: "HENOCH", capacity: 4, allocated: 0 },
     { room: "PENIEL", capacity: 4, allocated: 0 },
@@ -38,7 +38,7 @@ const hostelRooms = {
     { room: "PELATIAH", capacity: 4, allocated: 0 },
     { room: "ABRAHAM", capacity: 8, allocated: 0 },
     { room: "GOMER", capacity: 8, allocated: 0 },
-    { room: "ABIMAEL", capacity: 4, allocated: 0 },
+    { room: "ABIMAEL", capacity: 8, allocated: 0 },
     { room: "KOLARIAH", capacity: 4, allocated: 0 },
     { room: "KEMUEL", capacity: 4, allocated: 0 },
     { room: "REHOBOTH", capacity: 4, allocated: 0 },
@@ -52,7 +52,7 @@ const hostelRooms = {
     { room: "MALCHUS", capacity: 4, allocated: 0 },
     { room: "HAGGITH", capacity: 4, allocated: 0 },
     { room: "HANAN", capacity: 4, allocated: 0 },
-    { room: "KABZEEL", capacity: 4, allocated: 0 },
+    { room: "KABZEEL", capacity: 6, allocated: 0 },
   ],
   female: [
     { room: "SALEM", capacity: 36, allocated: 0 },
@@ -79,9 +79,9 @@ function allocateHostels(name, age, gender){
       availableRooms[Math.floor(Math.random() * availableRooms.length)];
     randomlySelectRoom.allocated += 1;
 
-    console.log('The Total Room', hostelRooms)
-    console.log('The Allocated Room', randomlySelectRoom)
-    console.log('The Available Room', availableRooms)
+    // console.log('The Total Room', hostelRooms)
+    // console.log('The Allocated Room', randomlySelectRoom)
+    // console.log('The Available Room', availableRooms)
 
     return {
       message: `Successfully Allocated ${name} to ${randomlySelectRoom.room}`,

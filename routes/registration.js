@@ -21,8 +21,8 @@ routes.get("/", async (req, res) => {
 routes.post("/", cors(), async (req, res) => {
   const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, camperType, denomination, paymentOption, noOfUnpaidCampersOption, noOfCampersToPayFor,
   } = await req.body;
-  const allocatedRoom = allocateHostels(fullName, age, gender)
-  console.log(allocatedRoom)
+  // const allocatedRoom = allocateHostels(fullName, age, gender)
+  // console.log(allocatedRoom)
 
 
   // ## Data to be registered
@@ -70,6 +70,7 @@ routes.post("/", cors(), async (req, res) => {
             .catch((err) => {
                  console.log(`Error in FE fron Worker ${err}`);
             });
+            // console.log(`This is the Task ${task}`)
           //   // Send This details to the celery worker to send the email
   
           // res.status(200).json({ message: "Registration Successful", paymentUrl: paymentURL });

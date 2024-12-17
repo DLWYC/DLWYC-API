@@ -122,9 +122,9 @@ const campRegistrationSchema = new mongoose.Schema(
       type: Boolean,
       default: false
     },
-    allocatedRoom: {
-      type: String
-    }
+    // allocatedRoom: {
+    //   type: String
+    // }
   },
   { timestamps: true }
 );
