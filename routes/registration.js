@@ -60,6 +60,7 @@ routes.post("/", cors(), async (req, res) => {
                     fullName: d.fullName,
                     archdeaconry: d.archdeaconry,
                     parish: d.parish,
+                    hostel: allocatedRoom.data.room
                  },
             ]);
             task

@@ -96,7 +96,7 @@ worker.register("tasks.sendPaymentEmail", async (args, task) => {
 });
 
 worker.register("tasks.sendRegistrationEmail", async (args, task) => {
-  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL } = args;
+  const { email, uniqueID, fullName, archdeaconry, parish, paymentURL, hostel } = args;
   console.log(args);
 
   const mailOptions = {
@@ -123,6 +123,7 @@ worker.register("tasks.sendRegistrationEmail", async (args, task) => {
                 : `<li>ARCHDEACONRY: ${archdeaconry}</li>`
             } 
             ${archdeaconry === null ? "" : `<li>PARISH: ${parish}</li>`} 
+            <li>HOSTEL: ${hostel} </li>
           </ol>
            
           <p>
