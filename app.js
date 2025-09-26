@@ -27,7 +27,7 @@ const userRegistration = require('./routes/UserRoute/userRegistration')
 const userDashboard = require('./routes/UserRoute/userDashboard')
 const userLogin = require('./routes/UserRoute/userLogin')
 const userRegisteredEvents = require('./routes/UserRoute/userRegisteredEvent')
-const userPayment = require('./routes/payment')
+const verifyUserPayment = require('./routes/payment')
 
 // ADMIN
 const event = require('./routes/AdminRoute/events')
@@ -47,7 +47,7 @@ app.use('/api/userRegistration', userRegistration)
 app.use('/api/userLogin', userLogin)
 app.use('/api/userDashboard', authMiddlware, userDashboard)
 app.use('/api/userRegisteredEvents', userRegisteredEvents)
-app.use('/api/userPayment', userPayment)
+app.use('/api/verify-payment', verifyUserPayment)
 
 // ADMIN
 app.use('/api/admin/events', event)

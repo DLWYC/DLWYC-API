@@ -96,30 +96,6 @@ const UserSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
-    payment: {
-      paymentOption: {
-        type: String
-      },
-      paymentID: {
-        type: Number,
-        default: null
-      },
-      paymentStatus: {
-        type: String,
-        default: 'Not Payed'
-      },
-      reference: {
-        type: String,
-        default: null
-      },
-      modeOfPayment: {
-        type: String,
-        default: null
-      },
-      paymentTime: {
-        type: String,
-      },  
-    },
     checkStatus: {
       type: Boolean,
       default: false

@@ -3,6 +3,8 @@ const router = express.Router()
 const UserRegisteredEventsModel = require('../../models/userEventsRegistered')
 const { userModel } = require('../../models/userModels')
 const { errorHandling } = require('../../controllers/errorHandler')
+const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
+
 
 
 router.get('/:fullName/:uniqueID(.*)', async (req, res) => {
@@ -11,7 +13,6 @@ router.get('/:fullName/:uniqueID(.*)', async (req, res) => {
      try {
           const userRegisteredEvent = await UserRegisteredEventsModel.find({ $and: [{ "userProfile.fullName": fullName }, { "userProfile.uniqueID": uniqueID }] })
 
-          console.log(`Congratulation: ${fullName} You Have Gotten Here`, userRegisteredEvent)
 
           if (userRegisteredEvent.length <= 0) {
                res.status(200).json({ message: "You've Not Registered For Any Event", data: userRegisteredEvent })
@@ -31,27 +32,30 @@ router.get('/:fullName/:uniqueID(.*)', async (req, res) => {
 
 
 router.post('/', async (req, res) => {
-     const { uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, paymentID, paymentStatus, reference, modeOfPayment, paymentTime } = req.body
+     const { uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID } = req.body
 
-     // console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, paymentID, paymentStatus, reference, modeOfPayment, paymentTime)
+     console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID)
+
 
      // First Check if the user with the Email and UniqueID has Registered for an event before
      const event = {
-          "eventId": eventId,
-          "eventTitle": eventTitle,
-          "registrationStatus": registrationStatus,
-          "paymentOption": paymentOption,
-          "paymentID": paymentID,
+          "eventId": eventId, //
+          "eventTitle": eventTitle, //
+          "registrationStatus": paymentStatus == 'success' ? true : false,
           "paymentStatus": paymentStatus,
           "reference": reference,
           "modeOfPayment": modeOfPayment,
           "paymentTime": paymentTime,
+          "paymentOption": paymentOption,
+          "paymentID": paymentID,
      }
-     const eventDetails = await new UserRegisteredEventsModel({
+
+     console.log("Tjs is the sudjsdf", event)
+     const eventDetails = new UserRegisteredEventsModel({
           userProfile: {
-               "uniqueID": uniqueID,
-               "fullName": fullName,
-               "email": email
+               "uniqueID": uniqueID, //
+               "fullName": fullName, //
+               "email": email //
           },
           event: [event]
      })
@@ -59,7 +63,7 @@ router.post('/', async (req, res) => {
 
      const ifUserExists = await userModel.findOne({ $and: [{ "uniqueID": uniqueID }, { "email": email }] })
      const userRegisteredEvent = await UserRegisteredEventsModel.findOne({ $and: [{ "userProfile.uniqueID": uniqueID }, { "userProfile.email": email }] })
-     console.log(ifUserExists)
+
      try {
           if (ifUserExists) {
 
@@ -72,19 +76,46 @@ router.post('/', async (req, res) => {
                     }
                     else {
                          await userevents.push(event)
-                         userRegisteredEvent.save()
-                         res.status(200).json({ message: `Registration For ${event.eventTitle} Is Successful` })
+                         switch (paymentStatus) {
+                              case 'success':
+                                   res.status(200).json({ message: `Registration Successful` })
+                                   userRegisteredEvent.save()
+                                   break;
+                              case 'failed':
+                                   res.status(200).json({ message: `Registration Failed` })
+                                   userRegisteredEvent.save()
+                                   break;
+                              case 'abandoned':
+                                   res.status(200).json({ message: `Registration Abandoned` })
+                                   break;
+                              default:
+                                   console.log("Interesting")
+                                   break;
+
+                         }
                     }
                }
-
-
                else {
                     await UserRegisteredEventsModel.create(eventDetails)
                          .then(d => {
-                              res.status(200).json({ message: "Event Registered Successfully", data: d.event });
+                              switch (paymentStatus) {
+                                   case 'success':
+                                        res.status(200).json({ message: "Registered Successfully", data: d.event });
+                                        break;
+                                   case 'failed':
+                                        res.status(200).json({ message: `Registration Failed`, data: d.event })
+                                        break;
+                                   case 'abandoned':
+                                        res.status(200).json({ message: `Registration Abandoned` })
+                                        break;
+                                   default:
+                                        console.log("Interesting")
+                                        break;
+                              }
+
                          })
                          .catch(err => {
-                              console.log(err)
+                              console.log("Error Saving Registration DEtails",err)
                               throw (err)
                          })
                }
@@ -96,7 +127,7 @@ router.post('/', async (req, res) => {
      }
      catch (error) {
           const err = errorHandling(error);
-          console.error(err);
+          console.error("This is Effor Create USed Registration DEtails",err);
           res.status(400).json({ errors: err, message: "User Event Registration Error" });
      }
 
