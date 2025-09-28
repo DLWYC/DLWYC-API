@@ -47,7 +47,7 @@ app.use('/api/userRegistration', userRegistration)
 app.use('/api/userLogin', userLogin)
 app.use('/api/userDashboard', authMiddlware, userDashboard)
 app.use('/api/userRegisteredEvents', userRegisteredEvents)
-app.use('/api/verify-payment', verifyUserPayment)
+app.use('/api/payment', verifyUserPayment)
 
 // ADMIN
 app.use('/api/admin/events', event)

@@ -2,12 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const routes = express.Router();
 const { userModel } = require("../../models/userModels");
-const cors = require("cors");
 const { errorHandling } = require("../../controllers/errorHandler");
 const celery = require("celery-node");
-const client = celery.createClient(process.env.BROKER_URL, process.env.BROKER_URL)
-const { initializeTransaction } = require("../../utils/initializeTransaction");
-const { allocateHostels } = require("../../controllers/roomAllocation")
 
 
 // #:::::::::::::::: GET ALL REGISTERED USERS : ::::::::::::;;;

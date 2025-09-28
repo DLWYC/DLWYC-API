@@ -35,6 +35,10 @@ const UserSchema = new mongoose.Schema(
       required: [true, "Please Enter Your Phone Number"],
       validate: [isMobilePhone, "Please Enter A Valid Phone Number"],
     },
+    profilePicture: {
+        type: String,
+        default: null
+    },
     age: {
       type: String,
       required: [true, "Please Enter Your Age"],
@@ -78,31 +82,12 @@ const UserSchema = new mongoose.Schema(
         "Satellite",
         "Somolu",
       ],
+      required: [true, ' Please Select Your Archdeaconry']
     },
     parish: {
       type: String,
+      required: [true, 'Please Select Your Parish']
     },
-    camperType: {
-      type: String,
-      enum: ["First Timer", "Regular Timer"],
-      // required: [true, "Please Select An Option"],
-    },
-    denomination: {
-      type: String,
-      enum: ["Anglican", "Non-Anglican"],
-      // required: [true, "Please Select An Option"],
-    },
-    rulesAndRegulations: {
-      type: Boolean,
-      default: true,
-    },
-    checkStatus: {
-      type: Boolean,
-      default: false
-    },
-    allocatedRoom: {
-      type: String
-    }
   },
   { timestamps: true }
 );

@@ -36,19 +36,19 @@ router.post('/', async (req, res) => {
 
      console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID)
 
-
      // First Check if the user with the Email and UniqueID has Registered for an event before
      const event = {
           "eventId": eventId, //
           "eventTitle": eventTitle, //
-          "registrationStatus": paymentStatus == 'success' ? true : false,
-          "paymentStatus": paymentStatus,
+          "registrationStatus": modeOfPayment == 'Code' ? true : paymentStatus == 'success' ? true : false,
+          "paymentStatus": modeOfPayment == 'Code' ? 'success' : paymentStatus,
           "reference": reference,
           "modeOfPayment": modeOfPayment,
-          "paymentTime": paymentTime,
+          "paymentTime": modeOfPayment ? new Date() : paymentTime,
           "paymentOption": paymentOption,
           "paymentID": paymentID,
      }
+
 
      console.log("Tjs is the sudjsdf", event)
      const eventDetails = new UserRegisteredEventsModel({
@@ -115,7 +115,7 @@ router.post('/', async (req, res) => {
 
                          })
                          .catch(err => {
-                              console.log("Error Saving Registration DEtails",err)
+                              console.log("Error Saving Registration DEtails", err)
                               throw (err)
                          })
                }
@@ -127,7 +127,7 @@ router.post('/', async (req, res) => {
      }
      catch (error) {
           const err = errorHandling(error);
-          console.error("This is Effor Create USed Registration DEtails",err);
+          console.error("This is Effor Create USed Registration DEtails", err);
           res.status(400).json({ errors: err, message: "User Event Registration Error" });
      }
 

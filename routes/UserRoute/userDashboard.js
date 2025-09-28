@@ -15,7 +15,7 @@ router.get('/', async (req, res) => {
           "phoneNumber": userDetails.phoneNumber,
           "age": userDetails.age,
           "gender": userDetails.gender,
-          "profilePicture": null,
+          "profilePicture": userDetails.profilePicture,
           "parish": userDetails.parish,
           "archdeaconry": userDetails.archdeaconry
      }
