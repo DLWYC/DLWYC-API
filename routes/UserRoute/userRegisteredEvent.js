@@ -32,14 +32,15 @@ router.get('/:fullName/:uniqueID(.*)', async (req, res) => {
 
 
 router.post('/', async (req, res) => {
-     const { uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID } = req.body
+     const { uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID, amountOfPeople } = req.body
 
-     console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID)
+     console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID, amountOfPeople)
 
      // First Check if the user with the Email and UniqueID has Registered for an event before
      const event = {
           "eventId": eventId, //
           "eventTitle": eventTitle, //
+          "amountOfPeople": amountOfPeople, //
           "registrationStatus": modeOfPayment == 'Code' ? true : paymentStatus == 'success' ? true : false,
           "paymentStatus": modeOfPayment == 'Code' ? 'success' : paymentStatus,
           "reference": reference,
@@ -63,6 +64,8 @@ router.post('/', async (req, res) => {
 
      const ifUserExists = await userModel.findOne({ $and: [{ "uniqueID": uniqueID }, { "email": email }] })
      const userRegisteredEvent = await UserRegisteredEventsModel.findOne({ $and: [{ "userProfile.uniqueID": uniqueID }, { "userProfile.email": email }] })
+
+     console.log("If USer Exist", ifUserExists)
 
      try {
           if (ifUserExists) {

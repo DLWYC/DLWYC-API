@@ -30,7 +30,7 @@ routes.post("/verify-payment", async (req, res) => {
 
 
 routes.post('/verify-code', async (req, res) => {
-  const { payersId, paymentCode, archdeaconry } = req.body;
+  const { payersId, paymentCode, archdeaconry, eventTitle } = req.body;
 
   try {
     // Find all payers in the specified archdeaconry
@@ -46,9 +46,14 @@ routes.post('/verify-code', async (req, res) => {
 
     // Find the specific payer by payerId
     const findSpecificPayer = await response.find(result => result.payerId === payersId);
+    console.table(findSpecificPayer.eventTitle)
 
     if (!findSpecificPayer) {
       throw new Error("Payer not found");
+    }
+
+    if (findSpecificPayer.eventTitle != eventTitle) {
+      throw new Error("Invalid Code For Event")
     }
 
     // Check if payer has codes
@@ -57,12 +62,15 @@ routes.post('/verify-code', async (req, res) => {
     }
 
     // Find the specific payment code
-    const findSpecificCode = await findSpecificPayer.codes.filter(codes => codes.code === paymentCode);
+    const findSpecificCode = await findSpecificPayer.codes.find(codes => codes.code === paymentCode);
 
-    if (findSpecificCode.length === 0) {
+    if (!findSpecificCode) {
       throw new Error("Invalid Code");
     }
-
+    
+    if(findSpecificCode.status == "Used"){
+      throw new Error("Sorry This Code Has Been Used");
+    }
     // Log for debugging
     console.log({ "Payer": findSpecificPayer, "Code": findSpecificCode });
 
@@ -88,58 +96,162 @@ routes.post('/verify-code', async (req, res) => {
 
 
 
-// routes.post('/verify-code', async (req, res) => {
-//   const { payersId, paymentCode, archdeaconry } = req.body
-//   console.table(payersId, paymentCode, archdeaconry)
+routes.post('/generate-code', async (req, res) => {
+  const { numberOfPersons } = req.body
 
-//   try {
+  const codes = new Set(); // Use Set to ensure uniqueness
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // 36 possible characters
+  const originalSize = codes.size;
 
-//     const response = await paymentCodeModel.find({ 'payerArchdeaconry': archdeaconry })
-//     if (!response) {
-//       throw new Error("No Payment Made For This Archdeaconry")
-//     }
-//     else {
-//       const findSpecificPayer = await response.find(result => result.payerId == payersId)
-//       if (findSpecificCode.length == 0) {
-//         throw new Error({ message: "Invalid Code" })
-//       }
-      
-//       const findSpecificCode = await findSpecificPayer.codes.filter(codes => codes.code == paymentCode)
+  while (codes.size < originalSize + numberOfPersons) {
+    // Generate exactly 7 random characters
+    const code = Array.from({ length: 7 }, () =>
+      characters[Math.floor(Math.random() * characters.length)]
+    ).join('');
 
-//       console.log({ "Payer": findSpecificPayer, "Code": findSpecificCode })
-//       res.status(200).json({ data: findSpecificCode, message: "Valid Code" })
-//     }
-//   }
-//   catch (err) {
-//     const error = errorHandling(err);
-//     console.log(error);
-//     res.status(400).json({ location: "Code Verification", errors: error });
-//   }
-// })
+    codes.add(code);
+  }
+  // const codesArray = Array.from(codes).slice(originalSize);
+  const codesArray = Array.from(codes).slice(originalSize).map((code, index) => ({
+    codeId: index + 1,
+    code: code,
+    status: "Not Used",
+    userName: null,
+    userEmail: null,
+    userId: null,
+    createdAt: new Date().toISOString()
+  }));
+  console.log("codesArray", codesArray)
 
-
+  res.status(200).json({ data: codesArray });
+})
 
 
-// routes.post('/verify-code', async (req, res) => {
-//   const { payerId } = req.body
-//   console.log("Payer ID:", payerId)
-//   try {
-//     const response = await paymentCodeModel.findOne({ 'payerId': payerId })
-//     switch(response){
-//       case null:
-//         res.status(200).json({data: "Nothing", message: "No Code Generated For This Payer"})
-//         break;
-//       default:
-//         res.status(200).json({data: response})
-//         break;
-//     }
-//   }
-//   catch (err) {
-//     const error = errorHandling(err);
-//     console.log(error);
-//     res.status(400).json({location: "Code Verification", errors: error });
-//   }
-// })
+
+
+routes.post('/save-codes', async (req, res) => {
+  const { payerId, payerArchdeaconry, codes, eventId, eventTitle } = req.body
+  console.log("Payer ID:", payerId)
+
+  try {
+    console.profile("Creating New Payer Record");
+    const existingPayer = await paymentCodeModel.findOne({ $and: [{ 'payerId': payerId }, { 'eventTitle': eventTitle }] })
+
+    const newPaymentData = await new paymentCodeModel({
+      "payerId": payerId,
+      "payerArchdeaconry": payerArchdeaconry,
+      "eventId": eventId,
+      "eventTitle": eventTitle,
+      "codes": codes
+    })
+    // User Has no Payed For Pple Before
+    if (!existingPayer) {
+      console.log("Nothing Yet")
+      const newPaymentWithCode = await paymentCodeModel.create(newPaymentData)
+      res.status(200).json({ data: newPaymentWithCode, message: "Saved Successfully" })
+    }
+    else {
+      console.log("Adding codes to existing payer");
+      existingPayer.codes.push(...codes);
+
+      // Save the updated document
+      const updatedPayer = await existingPayer.save();
+
+      return res.status(200).json({
+        data: updatedPayer,
+        message: "Added new codes successfully",
+        totalCodes: updatedPayer.codes.length
+      });
+    }
+  }
+  catch (err) {
+    const error = errorHandling(err);
+    console.log(error);
+    res.status(400).json({ location: "Code Verification", errors: error });
+  }
+})
+
+
+routes.patch('/update-code-status', async (req, res) => {
+  const { payersId, paymentCode, archdeaconry, eventTitle, userName, userId, userEmail } = req.body;
+
+  console.log("Values asd", archdeaconry, eventTitle)
+
+  try {
+    const findArchdeaconry = await paymentCodeModel.find({ 'payerArchdeaconry': archdeaconry });
+
+    if (!findArchdeaconry || findArchdeaconry.length === 0) {
+      return res.status(200).json({
+        data: "Nothing",
+        message: "No Payment For Your Archdeaconry"
+      });
+    }
+
+    const findSpecificPayer = findArchdeaconry.find(result => result.payerId === payersId);
+
+    if (!findSpecificPayer) {
+      throw new Error("Payer not found");
+    }
+
+    if (findSpecificPayer.eventTitle != eventTitle) {
+      throw new Error("Invalid Code For Event");
+    }
+
+    if (!findSpecificPayer.codes || findSpecificPayer.codes.length === 0) {
+      throw new Error("No payment codes found for this payer");
+    }
+
+    // Find the specific payment code
+    const codeIndex = findSpecificPayer.codes.findIndex(codes => codes.code === paymentCode);
+
+    if (codeIndex === -1) {
+      throw new Error("Invalid Code");
+    }
+
+    // Update the specific code using MongoDB's positional operator
+    const updatedPayer = await paymentCodeModel.findOneAndUpdate(
+      {
+        'payerId': payersId,
+        'codes.code': paymentCode
+      },
+      {
+        $set: {
+          'codes.$.status': 'Used',
+          'codes.$.userName': userName,
+          'codes.$.userEmail': userEmail,
+          'codes.$.userId': userId,
+          'codes.$.usedAt': new Date()
+        }
+      },
+      { new: true } // Return updated document
+    );
+
+    // Find the updated code to return
+    const updatedCode = updatedPayer.codes.find(code => code.code === paymentCode);
+
+    console.log("Updated Code:", updatedCode);
+
+    return res.status(200).json({
+      success: true,
+      data: updatedCode,
+      message: "Code status updated successfully",
+      payer: {
+        id: updatedPayer.payerId,
+        archdeaconry: updatedPayer.payerArchdeaconry
+      }
+    });
+
+  } catch (err) {
+    const error = errorHandling(err);
+    console.error("Error From Code Verification:", error);
+    res.status(500).json({
+      location: "Code Verification",
+      error: error
+    });
+  }
+});
+
+
 
 
 module.exports = routes;

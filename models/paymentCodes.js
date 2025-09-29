@@ -7,6 +7,12 @@ const paymentCodeSchema = new mongoose.Schema({
      payerArchdeaconry: {
           type: String,
      },
+     eventId: {
+          type: String,
+     },
+     eventTitle: {
+          type: String,
+     },
      codes: [{
           code: {
                type: String
@@ -22,9 +28,13 @@ const paymentCodeSchema = new mongoose.Schema({
                type: String
           },
           userId: {
-               type: Number,
+               type: String,
                default: null
           },
+          createdAt: {
+               type: Date,
+               default: Date.now
+          }
      }]
 })
 

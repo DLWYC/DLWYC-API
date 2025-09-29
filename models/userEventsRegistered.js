@@ -28,8 +28,11 @@ const UserRegisteredEventsSchema = new mongoose.Schema({
           paymentOption: {
                type: String
           },
+          amountOfPeople: {
+               type: String
+          },
           paymentID: {
-               type: Number,
+               type: String,
                default: null
           },
           paymentStatus: {

@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken')
 
 router.get('/', async (req, res) => {
      const userDetails = await userModel.findOne({ "email": req.user.email })
-     console.log({"userDashBoard Route": userDetails})
+     // console.log({"userDashBoard Route": userDetails})
 
      const userDashboardDetails = {
           "fullName": userDetails.fullName,
