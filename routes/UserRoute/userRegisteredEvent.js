@@ -80,10 +80,6 @@ router.post('/', async (req, res) => {
                     else {
                          await userevents.push(event)
                          switch (paymentStatus) {
-                              case 'success':
-                                   res.status(200).json({ message: `Registration Successful` })
-                                   userRegisteredEvent.save()
-                                   break;
                               case 'failed':
                                    res.status(200).json({ message: `Registration Failed` })
                                    userRegisteredEvent.save()
@@ -92,7 +88,8 @@ router.post('/', async (req, res) => {
                                    res.status(200).json({ message: `Registration Abandoned` })
                                    break;
                               default:
-                                   console.log("Interesting")
+                                  res.status(200).json({ message: `Registration Successful` })
+                                   userRegisteredEvent.save()
                                    break;
 
                          }
@@ -102,9 +99,6 @@ router.post('/', async (req, res) => {
                     await UserRegisteredEventsModel.create(eventDetails)
                          .then(d => {
                               switch (paymentStatus) {
-                                   case 'success':
-                                        res.status(200).json({ message: "Registered Successfully", data: d.event });
-                                        break;
                                    case 'failed':
                                         res.status(200).json({ message: `Registration Failed`, data: d.event })
                                         break;
@@ -112,7 +106,7 @@ router.post('/', async (req, res) => {
                                         res.status(200).json({ message: `Registration Abandoned` })
                                         break;
                                    default:
-                                        console.log("Interesting")
+                                         res.status(200).json({ message: "Registered Successfully", data: d.event });
                                         break;
                               }
 

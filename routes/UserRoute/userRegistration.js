@@ -24,7 +24,8 @@ routes.post("/", async (req, res) => {
     archdeaconry,
     parish,
     age,
-    password
+    password,
+    profilePicture
   } = await req.body;
 
   try {
@@ -48,6 +49,7 @@ routes.post("/", async (req, res) => {
         password: password,
         archdeaconry: archdeaconry,
         parish: parish,
+        profilePicture: profilePicture
       });
 
 

@@ -8,6 +8,29 @@ const { paymentCodeModel } = require("../models/paymentCodes");
 const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
 
 
+routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
+  const { userUniqueId } = req.params
+  console.table({ "userUniqueId": userUniqueId, "type": typeof userUniqueId })
+  try {
+
+    const paymentData = await paymentCodeModel.findOne({ "payerId": userUniqueId })
+    console.log("Data",paymentData)
+
+    if(!paymentData){
+      return res.status(200).json({ data: [] })
+    }
+    res.status(200).json({ data: paymentData.codes })
+  }
+  catch (err) {
+    const error = errorHandling(err);
+    console.log(error);
+    res.status(400).json({ errors: error });
+  }
+})
+
+
+
+
 // Verify Payment
 routes.post("/verify-payment", async (req, res) => {
   const { reference, userId } = req.body
@@ -46,7 +69,7 @@ routes.post('/verify-code', async (req, res) => {
 
     // Find the specific payer by payerId
     const findSpecificPayer = await response.find(result => result.payerId === payersId);
-    console.table(findSpecificPayer.eventTitle)
+    console.log("Find Payere", findSpecificPayer)
 
     if (!findSpecificPayer) {
       throw new Error("Payer not found");
@@ -67,8 +90,8 @@ routes.post('/verify-code', async (req, res) => {
     if (!findSpecificCode) {
       throw new Error("Invalid Code");
     }
-    
-    if(findSpecificCode.status == "Used"){
+
+    if (findSpecificCode.status == "Used") {
       throw new Error("Sorry This Code Has Been Used");
     }
     // Log for debugging
