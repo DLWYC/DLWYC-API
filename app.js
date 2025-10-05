@@ -43,11 +43,11 @@ const event = require('./routes/AdminRoute/events')
 
 
 // #::::::::::::::::::::::::::::::::::::::: USER API ENDPOINT :::::::::::::::::::::::::# //
-app.use('/api/userRegistration', userRegistration)
-app.use('/api/userLogin', userLogin)
-app.use('/api/userDashboard', authMiddlware, userDashboard)
-app.use('/api/userRegisteredEvents', userRegisteredEvents)
-app.use('/api/payment', verifyUserPayment)
+app.use('/api/userRegistration', cors(), userRegistration)
+app.use('/api/userLogin', cors(), userLogin)
+app.use('/api/userDashboard', cors(), authMiddlware, userDashboard)
+app.use('/api/userRegisteredEvents', cors(), userRegisteredEvents)
+app.use('/api/payment', cors(), verifyUserPayment)
 
 // ADMIN
 app.use('/api/admin/events', event)
