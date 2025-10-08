@@ -9,7 +9,7 @@ router.get('/', async (req, res) => {
      const allEvents = await eventModel.find()
 
      if (allEvents.length <= 0) {
-          res.status(400).json({ errors: "No Event Created", })
+          return res.status(400).json({ errors: "No Event Created", })
      }
 
      res.status(200).json({message: "Events Found", data: allEvents})
