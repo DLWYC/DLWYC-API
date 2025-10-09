@@ -37,15 +37,15 @@ routes.post("/verify-payment", async (req, res) => {
   console.table({ "refernce": reference, "UserId": userId, })
 
   try {
-    const { data } = await paystack.transaction.verify(reference)
-    console.info("data", data)
+    const {data}  = await paystack.transaction.verify(reference)
+    console.info("Verified Data", data)
     res.status(200).json({ message: "Response", data: data })
   }
 
 
   catch (err) {
     const error = errorHandling(err);
-    console.log(error);
+    console.log("Error Verify:", error);
     res.status(400).json({ errors: error });
   }
 });
