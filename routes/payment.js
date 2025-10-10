@@ -14,9 +14,9 @@ routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
   try {
 
     const paymentData = await paymentCodeModel.findOne({ "payerId": userUniqueId })
-    console.log("Data",paymentData)
+    console.log("Data", paymentData)
 
-    if(!paymentData){
+    if (!paymentData) {
       return res.status(200).json({ data: [] })
     }
     res.status(200).json({ data: paymentData.codes })
@@ -37,13 +37,32 @@ routes.post("/verify-payment", async (req, res) => {
   console.table({ "refernce": reference, "UserId": userId, })
 
   try {
-    const {data}  = await paystack.transaction.verify(reference)
-    console.info("Verified Data", data)
-    res.status(200).json({ message: "Response", data: data })
+    const responseData = await paystack.transaction.verify(reference)
+    // const data = responseData?.data
+    // console.info("Verified Data", data)
+    // res.status(200).json({ message: "Response", data: data })
+    const data = responseData?.data || responseData?.body?.data || responseData;
+    console.info("Verified Data:", data);
+
+    // Check if data exists and has status
+    if (!data || !data.status) {
+      throw new Error("Invalid response from Paystack");
+    }
+
+    res.status(200).json({
+      message: "Payment verified successfully",
+      data: data
+    });
   }
 
 
   catch (err) {
+    // Log full error details
+    console.error("Error Verify - Full Error:", err);
+    console.error("Error Message:", err.message);
+    console.error("Error Stack:", err.stack);
+    console.error("Error Response Data:", err.response?.data);
+    
     const error = errorHandling(err);
     console.log("Error Verify:", error);
     res.status(400).json({ errors: error });
