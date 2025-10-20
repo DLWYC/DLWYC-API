@@ -7,9 +7,8 @@ const mongoose = require('mongoose')
 const authMiddlware = require('./middleware/auth')
 
 // # :::::: This will allow json data to be passed ::::::
-app.use(express.json())
-app.use(cors())
 // Increase the payload limit BEFORE your routes
+app.use(cors())
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -45,11 +44,11 @@ const event = require('./routes/AdminRoute/events')
 
 
 // #::::::::::::::::::::::::::::::::::::::: USER API ENDPOINT :::::::::::::::::::::::::# //
-app.use('/api/userRegistration', cors(), userRegistration)
-app.use('/api/userLogin', cors(), userLogin)
-app.use('/api/userDashboard', cors(), authMiddlware, userDashboard)
-app.use('/api/userRegisteredEvents', cors(), userRegisteredEvents)
-app.use('/api/payment', cors(), verifyUserPayment)
+app.use('/api/userRegistration', userRegistration)
+app.use('/api/userLogin', userLogin)
+app.use('/api/userDashboard', authMiddlware, userDashboard)
+app.use('/api/userRegisteredEvents', userRegisteredEvents)
+app.use('/api/payment', verifyUserPayment)
 
 // ADMIN
 app.use('/api/admin/events', event)
