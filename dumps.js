@@ -1,3 +1,85 @@
+/ #:::::::::::::::: UPDATE USER PROFILE PICTURE ::::::::::::
+routes.patch("/:userId/profile-picture", async (req, res) => {
+  const { profilePicture } = req.body;
+  
+  try {
+    const user = await userModel.findById(req.params.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Delete old image if exists
+    if (user.cloudinaryPublicId) {
+      await cloudinary.uploader.destroy(user.cloudinaryPublicId);
+    }
+
+    // Upload new image
+    if (profilePicture) {
+      const uploadResponse = await cloudinary.uploader.upload(profilePicture, {
+        folder: "user_profiles",
+        resource_type: "auto",
+        transformation: [
+          { width: 500, height: 500, crop: "limit" },
+          { quality: "auto" }
+        ]
+      });
+      
+      user.profilePicture = uploadResponse.secure_url;
+      user.cloudinaryPublicId = uploadResponse.public_id;
+      await user.save();
+    }
+
+    res.status(200).json({ 
+      message: "Profile picture updated successfully",
+      profilePicture: user.profilePicture
+    });
+  } catch (err) {
+    const error = errorHandling(err);
+    res.status(400).json({ error: error });
+  }
+});
+
+// #:::::::::::::::: DELETE USER PROFILE PICTURE ::::::::::::
+routes.delete("/:userId/profile-picture", async (req, res) => {
+  try {
+    const user = await userModel.findById(req.params.userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.cloudinaryPublicId) {
+      await cloudinary.uploader.destroy(user.cloudinaryPublicId);
+      user.profilePicture = null;
+      user.cloudinaryPublicId = null;
+      await user.save();
+    }
+
+    res.status(200).json({ message: "Profile picture deleted successfully" });
+  } catch (err) {
+    const error = errorHandling(err);
+    res.status(400).json({ error: error });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import { createContext, useContext, useState } from "react";
 import axios from "axios";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";

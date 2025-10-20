@@ -36,8 +36,12 @@ const UserSchema = new mongoose.Schema(
       validate: [isMobilePhone, "Please Enter A Valid Phone Number"],
     },
     profilePicture: {
-        type: String,
-        default: null
+      type: String,
+      default: null
+    },
+    cloudinaryPublicId: {
+      type: String,
+      default: null
     },
     age: {
       type: String,
