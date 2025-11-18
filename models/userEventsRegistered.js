@@ -50,6 +50,14 @@ const UserRegisteredEventsSchema = new mongoose.Schema({
           paymentTime: {
                type: String,
           },
+          checkedInStatus: {
+               type: Boolean,
+               default: false
+          },
+          checkInTime: {
+               type: Date,
+               default: Date.now
+          }
      }]
 })
 

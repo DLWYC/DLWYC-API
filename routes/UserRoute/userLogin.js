@@ -8,7 +8,15 @@ const { userModel } = require("../../models/userModels");
 
 routes.post("/", async (req, res) => {
      const { email, password } = req.body;
+
      try {
+
+          if (!email || email == "") {
+               throw new Error ("Please Enter Your Email");
+          }
+          if (!password || password == "") {
+               throw new Error ("Please Enter Your Password");
+          }
           const user = await userModel.findOne({ email: email });
           if (!user) {
                throw new Error("Wrong Username or Password");

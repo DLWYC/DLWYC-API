@@ -77,7 +77,7 @@ routes.post("/", async (req, res) => {
       password: password,
       archdeaconry: archdeaconry,
       parish: parish,
-      profilePicture: uploadedImageUrl,
+      profilePicture: cloudinaryPublicId == null ? null : uploadedImageUrl,
       cloudinaryPublicId: cloudinaryPublicId
     });
 

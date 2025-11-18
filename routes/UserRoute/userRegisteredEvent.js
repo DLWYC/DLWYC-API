@@ -88,7 +88,7 @@ router.post('/', async (req, res) => {
                                    res.status(200).json({ message: `Registration Abandoned` })
                                    break;
                               default:
-                                  res.status(200).json({ message: `Registration Successful` })
+                                   res.status(200).json({ message: `Registration Successful` })
                                    userRegisteredEvent.save()
                                    break;
 
@@ -106,7 +106,7 @@ router.post('/', async (req, res) => {
                                         res.status(200).json({ message: `Registration Abandoned` })
                                         break;
                                    default:
-                                         res.status(200).json({ message: "Registered Successfully", data: d.event });
+                                        res.status(200).json({ message: "Registered Successfully", data: d.event });
                                         break;
                               }
 

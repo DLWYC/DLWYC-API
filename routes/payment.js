@@ -38,9 +38,6 @@ routes.post("/verify-payment", async (req, res) => {
 
   try {
     const responseData = await paystack.transaction.verify(reference)
-    // const data = responseData?.data
-    // console.info("Verified Data", data)
-    // res.status(200).json({ message: "Response", data: data })
     const data = responseData?.data || responseData?.body?.data || responseData;
     console.info("Verified Data:", data);
 

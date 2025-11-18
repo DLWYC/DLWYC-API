@@ -1,5 +1,4 @@
 const errorHandling = (err) => {
-     console.log("Error From Error Handler", err)
      const error = {}
 
      // Validation Error

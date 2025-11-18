@@ -52,6 +52,28 @@ const UserSchema = new mongoose.Schema(
       enum: ["Male", "Female"],
       required: [true, "Please Select A Gender"],
     },
+    allocationStatus: {
+      type: String,
+      enum: ['NOT_STARTED', 'PENDING', 'ALLOCATED', 'CONFIRMED', 'REJECTED', 'EXPIRED'],
+      default: 'NOT_STARTED'
+    },
+    allocatedHostel: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Hostel',
+      default: null
+    },
+    allocationId: {
+      type: String,
+      default: null
+    },
+    allocatedAt: {
+      type: Date,
+      default: null
+    },
+    allocationExpiresAt: {
+      type: Date,
+      default: null
+    },
     archdeaconry: {
       type: String,
       enum: [
@@ -97,9 +119,17 @@ const UserSchema = new mongoose.Schema(
 );
 
 UserSchema.pre("save", async function (next) {
-  const saltRounds = await bcrypt.genSalt()
-  this.password = await bcrypt.hash(this.password, saltRounds)
-  this.uniqueID = generateUniqueId(this.archdeaconry);
+  // Only hash password if it's been modified
+  if (this.isModified('password')) {
+    const saltRounds = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(this.password, saltRounds);
+  }
+
+  // Only generate uniqueID if it's a new document (first save)
+  if (this.isNew && !this.uniqueID) {
+    this.uniqueID = generateUniqueId(this.archdeaconry);
+  }
+
   next();
 });
 
