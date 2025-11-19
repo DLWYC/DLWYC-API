@@ -1,3 +1,4 @@
+const Allocation = require('../../models/allocation');
 const { userModel } = require('../../models/userModels');
 const Hostel = require('../../models/hostel');
 const mongoose = require('mongoose');
