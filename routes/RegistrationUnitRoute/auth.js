@@ -2,9 +2,8 @@ require("dotenv").config();
 const express = require("express");
 const routes = express.Router();
 const bcrypt = require("bcrypt");
-const { errorHandling } = require("../controllers/errorHandler");
-// const { generateToken } = require("../utils/generateToken");
-const { adminModel } = require("../models/models");
+const { errorHandling } = require("../../controllers/errorHandler");
+const { adminModel } = require("../../models/admin");
 
 routes.post("/login", async (req, res) => {
      const { email, password } = req.body;
