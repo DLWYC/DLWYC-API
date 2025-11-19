@@ -1,3 +1,7 @@
+const mongoose = require("mongoose");
+const bcrypt = require('bcrypt')
+const { isEmail } = require("validator");
+
 // Admin
 const AdminSchema = new mongoose.Schema(
      {
