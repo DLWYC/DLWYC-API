@@ -34,7 +34,7 @@ router.get('/:fullName/:uniqueID(.*)', async (req, res) => {
 router.post('/', async (req, res) => {
      const { uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID, amountOfPeople } = req.body
 
-     console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID, amountOfPeople)
+     console.log("######################################", uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID, amountOfPeople, "######################################")
 
      try {
           // Check if user exists
