@@ -1,11 +1,69 @@
 require("dotenv").config();
 const express = require("express");
 const routes = express.Router();
-const cors = require("cors");
+const axios = require("axios");
 const { errorHandling } = require("../controllers/errorHandler");
 const { paymentCodeModel } = require("../models/paymentCodes");
 
-const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
+const PAYSTACK_SECRET_KEY = process.env.PAYSTACK_SECRET_KEY;
+
+
+
+
+
+routes.post('/initializeTransaction', async (req, res) => {
+  try {
+    const { email, amount, reference, currency, metadata, callback_url } = req.body;
+
+    // Validate required fields
+    if (!email || !amount || !reference) {
+      return res.status(400).json({
+        success: false,
+        message: 'Email, amount, and reference are required'
+      });
+    }
+
+    // Initialize payment with Paystack
+    const response = await axios.post(
+      'https://api.paystack.co/transaction/initialize',
+      {
+        email,
+        amount, // Amount should already be in kobo
+        reference,
+        currency: currency || 'NGN',
+        metadata,
+        callback_url: callback_url || `${process.env.FRONTEND_URL}/userdashboard/event/verifyPayment`
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.data.status) {
+      return res.status(200).json({
+        success: true,
+        data: response.data.data // Contains authorization_url, access_code, reference
+      });
+    } else {
+      throw new Error('Payment initialization failed');
+    }
+
+  } catch (error) {
+    console.error('Payment initialization error:', error.response?.data || error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.response?.data?.message || 'Failed to initialize payment',
+      error: error.response?.data
+    });
+  }
+
+  
+});
+
+
 
 
 routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
@@ -33,37 +91,49 @@ routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
 
 // Verify Payment
 routes.post("/verify-payment", async (req, res) => {
-  const { reference, userId } = req.body
-  console.table({ "refernce": reference, "UserId": userId, })
-
   try {
-    const responseData = await paystack.transaction.verify(reference)
-    const data = responseData?.data || responseData?.body?.data || responseData;
-    console.info("Verified Data:", data);
+    const { reference } = req.body;
 
-    // Check if data exists and has status
-    if (!data || !data.status) {
-      throw new Error("Invalid response from Paystack");
+    if (!reference) {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment reference is required'
+      });
     }
 
-    res.status(200).json({
-      message: "Payment verified successfully",
-      data: data
+    // Verify payment with Paystack
+    const response = await axios.get(
+      `https://api.paystack.co/transaction/verify/${reference}`,
+      {
+        headers: {
+          Authorization: `Bearer ${PAYSTACK_SECRET_KEY}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.data.status && response.data.data.status === 'success') {
+      return res.status(200).json({
+        success: true,
+        data: response.data.data // Contains all payment details
+      });
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'Payment verification failed',
+        data: response.data.data
+      });
+    }
+
+  } catch (error) {
+    console.error('Payment verification error:', error.response?.data || error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.response?.data?.message || 'Failed to verify payment',
+      error: error.response?.data
     });
   }
 
-
-  catch (err) {
-    // Log full error details
-    console.error("Error Verify - Full Error:", err);
-    console.error("Error Message:", err.message);
-    console.error("Error Stack:", err.stack);
-    console.error("Error Response Data:", err.response?.data);
-    
-    const error = errorHandling(err);
-    console.log("Error Verify:", error);
-    res.status(400).json({ errors: error });
-  }
 });
 
 
@@ -137,6 +207,7 @@ routes.post('/verify-code', async (req, res) => {
 
 routes.post('/generate-code', async (req, res) => {
   const { numberOfPersons } = req.body
+  console.log("Number of Persons", numberOfPersons)
 
   const codes = new Set(); // Use Set to ensure uniqueness
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'; // 36 possible characters

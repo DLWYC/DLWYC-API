@@ -8,6 +8,8 @@ const rateLimit = require('express-rate-limit');
 const timeout = require('connect-timeout');
 const mongoose = require('mongoose');
 
+// IMPORTANT: Add webhook route BEFORE express.json() middleware
+// because we need raw body for signature verification
 const app = express();
 const PORT = process.env.PORT || 5000;
 
@@ -41,11 +43,11 @@ mongoose.connect(process.env.DB_URL, {
      socketTimeoutMS: 45000,
      serverSelectionTimeoutMS: 5000,
 })
-.then(() => console.log('✓ Database Connected'))
-.catch(err => {
-     console.error('✗ Database Connection Failed:', err);
-     process.exit(1);
-});
+     .then(() => console.log('✓ Database Connected'))
+     .catch(err => {
+          console.error('✗ Database Connection Failed:', err);
+          process.exit(1);
+     });
 
 // ===== ROUTES =====
 const authMiddleware = require('./middleware/auth');
@@ -78,8 +80,8 @@ app.use((req, res) => {
 app.use((err, req, res, next) => {
      console.error('Error:', err);
      res.status(err.status || 500).json({
-          error: process.env.NODE_ENV === 'production' 
-               ? 'Internal server error' 
+          error: process.env.NODE_ENV === 'production'
+               ? 'Internal server error'
                : err.message
      });
 });
