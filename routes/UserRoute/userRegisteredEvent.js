@@ -36,99 +36,102 @@ router.post('/', async (req, res) => {
 
      console.log(uniqueID, fullName, email, eventId, eventTitle, registrationStatus, paymentOption, reference, paymentStatus, modeOfPayment, paymentTime, paymentID, amountOfPeople)
 
-     // First Check if the user with the Email and UniqueID has Registered for an event before
-     const event = {
-          "eventId": eventId, //
-          "eventTitle": eventTitle, //
-          "amountOfPeople": amountOfPeople, //
-          "registrationStatus": modeOfPayment == 'Code' ? true : paymentStatus == 'success' ? true : false,
-          "paymentStatus": modeOfPayment == 'Code' ? 'success' : paymentStatus,
-          "reference": reference,
-          "modeOfPayment": modeOfPayment,
-          "paymentTime": modeOfPayment ? new Date() : paymentTime,
-          "paymentOption": paymentOption,
-          "paymentID": paymentID,
-     }
-
-
-     console.log("Tjs is the sudjsdf", event)
-     const eventDetails = new UserRegisteredEventsModel({
-          userProfile: {
-               "uniqueID": uniqueID, //
-               "fullName": fullName, //
-               "email": email //
-          },
-          event: [event]
-     })
-
-
-     const ifUserExists = await userModel.findOne({ $and: [{ "uniqueID": uniqueID }, { "email": email }] })
-     const userRegisteredEvent = await UserRegisteredEventsModel.findOne({ $and: [{ "userProfile.uniqueID": uniqueID }, { "userProfile.email": email }] })
-
-     console.log("If USer Exist", ifUserExists)
-
      try {
-          if (ifUserExists) {
+          // Check if user exists
+          const ifUserExists = await userModel.findOne({ $and: [{ "uniqueID": uniqueID }, { "email": email }] })
 
-               if (userRegisteredEvent) {
-                    const userevents = await userRegisteredEvent.event
+          if (!ifUserExists) {
+               return res.status(400).json({
+                    message: `Sorry This User ${fullName} Does Not Have Any Account`,
+                    location: "User Registration EndPoint"
+               });
+          }
 
-                    // Check To See If there are no two events with the same id
-                    if (await userevents.some(events => events.eventId === event.eventId)) {
-                         throw new Error("Cannot Register For The Same Event Twice");
-                    }
-                    else {
-                         await userevents.push(event)
-                         switch (paymentStatus) {
-                              case 'failed':
-                                   res.status(200).json({ message: `Registration Failed` })
-                                   userRegisteredEvent.save()
-                                   break;
-                              case 'abandoned':
-                                   res.status(200).json({ message: `Registration Abandoned` })
-                                   break;
-                              default:
-                                   res.status(200).json({ message: `Registration Successful` })
-                                   userRegisteredEvent.save()
-                                   break;
+          // Find existing user registered events
+          const userRegisteredEvent = await UserRegisteredEventsModel.findOne({
+               $and: [
+                    { "userProfile.uniqueID": uniqueID },
+                    { "userProfile.email": email }
+               ]
+          })
 
-                         }
-                    }
-               }
-               else {
-                    await UserRegisteredEventsModel.create(eventDetails)
-                         .then(d => {
-                              switch (paymentStatus) {
-                                   case 'failed':
-                                        res.status(200).json({ message: `Registration Failed`, data: d.event })
-                                        break;
-                                   case 'abandoned':
-                                        res.status(200).json({ message: `Registration Abandoned` })
-                                        break;
-                                   default:
-                                        res.status(200).json({ message: "Registered Successfully", data: d.event });
-                                        break;
-                              }
+          // **CRITICAL FIX: Check for duplicate payment reference**
+          if (userRegisteredEvent && reference) {
+               const duplicatePayment = userRegisteredEvent.event.find(
+                    evt => evt.reference === reference && evt.paymentID === paymentID
+               );
 
-                         })
-                         .catch(err => {
-                              console.log("Error Saving Registration DEtails", err)
-                              throw (err)
-                         })
+               if (duplicatePayment) {
+                    console.log('Duplicate payment detected, returning existing registration');
+                    return res.status(200).json({
+                         message: 'Registration already exists for this payment',
+                         data: duplicatePayment,
+                         isDuplicate: true
+                    });
                }
           }
 
-          else {
-               res.status(400).json({ message: `Sorry This User ${fullName} Does Not Have Any Account`, location: "User Registration EndPoint" });
+          const event = {
+               "eventId": eventId,
+               "eventTitle": eventTitle,
+               "amountOfPeople": amountOfPeople,
+               "registrationStatus": modeOfPayment == 'Code' ? true : paymentStatus == 'success' ? true : false,
+               "paymentStatus": modeOfPayment == 'Code' ? 'success' : paymentStatus,
+               "reference": reference,
+               "modeOfPayment": modeOfPayment,
+               "paymentTime": modeOfPayment == 'Code' ? new Date() : paymentTime,
+               "paymentOption": paymentOption,
+               "paymentID": paymentID,
+          }
+
+          if (userRegisteredEvent) {
+               const userevents = userRegisteredEvent.event || []
+
+               // Check if already registered for the same event
+               if (userevents.some(events => events.eventId === event?.eventId)) {
+                    throw new Error("Cannot Register For The Same Event Twice");
+               }
+
+               // Add new event
+               userevents.push(event)
+               await userRegisteredEvent.save()
+
+               switch (paymentStatus) {
+                    case 'failed':
+                         return res.status(200).json({ message: `Registration Failed` })
+                    case 'abandoned':
+                         return res.status(200).json({ message: `Registration Abandoned` })
+                    default:
+                         return res.status(200).json({ message: `Registration Successful`, data: event })
+               }
+          } else {
+               // Create new registration document
+               const eventDetails = new UserRegisteredEventsModel({
+                    userProfile: {
+                         "uniqueID": uniqueID,
+                         "fullName": fullName,
+                         "email": email
+                    },
+                    event: [event]
+               })
+
+               const savedEvent = await eventDetails.save()
+
+               switch (paymentStatus) {
+                    case 'failed':
+                         return res.status(200).json({ message: `Registration Failed`, data: savedEvent.event })
+                    case 'abandoned':
+                         return res.status(200).json({ message: `Registration Abandoned` })
+                    default:
+                         return res.status(200).json({ message: "Registered Successfully", data: savedEvent.event });
+               }
           }
      }
      catch (error) {
           const err = errorHandling(error);
-          console.error("This is Effor Create USed Registration DEtails", err);
+          console.error("User Event Registration Error", err);
           res.status(400).json({ errors: err, message: "User Event Registration Error" });
      }
-
-
 })
 
 

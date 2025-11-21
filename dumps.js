@@ -1,3 +1,90 @@
+{
+  "_id": {
+    "$oid": "6903469f55779700c13b1cd9"
+  },
+  "userProfile": {
+    "uniqueID": "DLWYC/25/1600",
+    "fullName": "Marilyn Ikire",
+    "email": "marilynikire92@gmail.com"
+  },
+  "event": [
+    {
+      "eventId": "68e71fa94b1d40b98b5657db",
+      "eventTitle": "Diocesan Youth Conference",
+      "registrationStatus": true,
+      "paymentOption": "single",
+      "amountOfPeople": "1",
+      "paymentID": "5481720090",
+      "paymentStatus": "success",
+      "reference": "TXN_DLWYC251600_1761822203630",
+      "modeOfPayment": "bank_transfer",
+      "paymentTime": "Thu Oct 30 2025 11:06:07 GMT+0000 (Coordinated Universal Time)",
+      "_id": {
+        "$oid": "6903469f55779700c13b1cda"
+      },
+      "checkInTime": null,
+      "checkedInStatus": false
+    }
+  ],
+  "__v": 0
+}
+
+
+{
+  "_id": {
+    "$oid": "6909d414ae1e87330ed7eb48"
+  },
+  "userProfile": {
+    "uniqueID": "DLWYC/30/7479",
+    "fullName": "Olatunji Sekinat Adewunmi ",
+    "email": "sekinatadewunmi7@gmail.com"
+  },
+  "event": [
+    {
+      "eventId": "68e71fa94b1d40b98b5657db",
+      "eventTitle": "Diocesan Youth Conference",
+      "registrationStatus": true,
+      "paymentOption": "single",
+      "amountOfPeople": "1",
+      "paymentID": "5548459565",
+      "paymentStatus": "success",
+      "reference": "TXN_DLWYC307479_1763531783724",
+      "modeOfPayment": "bank",
+      "paymentTime": "Wed Nov 19 2025 05:57:16 GMT+0100 (West Africa Standard Time)",
+      "_id": {
+        "$oid": "6909d414ae1e87330ed7eb49"
+      },
+      "checkInTime": null,
+      "checkedInStatus": false
+    }
+  ],
+  "__v": 0
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 require('dotenv').config()
 const express = require('express')
 const app = express()
