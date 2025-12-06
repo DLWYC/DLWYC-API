@@ -93,7 +93,7 @@ routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
 routes.post("/verify-payment", async (req, res) => {
   try {
     const { reference } = req.body;
-
+  console.log("users Payment Reference", reference)
     if (!reference) {
       return res.status(400).json({
         success: false,
@@ -112,7 +112,7 @@ routes.post("/verify-payment", async (req, res) => {
       }
     );
 
-    console.log("Verification Response:", response);
+    console.log("Verification Response:", response?.data);
 
     if (response?.data?.status && response?.data?.data?.status === 'success') {
       return res.status(200).json({
