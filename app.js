@@ -69,6 +69,7 @@ app.use('/api/allocations', require('./routes/HostelRoute/allocationRoutes'));
 
 // Admin routes
 app.use('/api/admin/events', require('./routes/AdminRoute/events'));
+app.use('/api/admin/generalEvent', require('./routes/AdminRoute/generalEvent'));
 
 // ===== ERROR HANDLING =====
 // 404 handler

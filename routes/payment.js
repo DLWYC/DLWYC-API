@@ -111,17 +111,17 @@ routes.post("/verify-payment", async (req, res) => {
         }
       }
     );
-
-    if (response.data.status && response.data.data.status === 'success') {
+    console.log("Verification Response:", response);
+    if (response?.data?.status && response?.data?.data?.status === 'success') {
       return res.status(200).json({
         success: true,
-        data: response.data.data // Contains all payment details
+        data: response?.data?.data // Contains all payment details
       });
     } else {
       return res.status(400).json({
         success: false,
         message: 'Payment verification failed',
-        data: response.data.data
+        data: response?.data?.data
       });
     }
 
