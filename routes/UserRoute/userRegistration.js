@@ -1,3 +1,4 @@
+
 require("dotenv").config();
 const express = require("express");
 const routes = express.Router();
@@ -58,10 +59,10 @@ routes.post("/", async (req, res) => {
           ]
         });
 
-        uploadedImageUrl = uploadResponse.secure_url;
+        profilePictureUrl = uploadResponse.secure_url;
         cloudinaryPublicId = uploadResponse.public_id;
 
-        console.log("Image uploaded successfully:", uploadedImageUrl);
+        console.log("Image uploaded successfully:", profilePictureUrl);
       } catch (uploadErr) {
         console.error("Cloudinary upload error:", uploadErr);
         throw new Error("Failed to upload profile picture. Please try again.");
@@ -77,7 +78,7 @@ routes.post("/", async (req, res) => {
       password: password,
       archdeaconry: archdeaconry,
       parish: parish,
-      profilePicture: cloudinaryPublicId == null ? null : uploadedImageUrl,
+      profilePicture: cloudinaryPublicId == null ? null : profilePictureUrl,
       cloudinaryPublicId: cloudinaryPublicId
     });
 

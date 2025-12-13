@@ -60,7 +60,7 @@ routes.post('/initializeTransaction', async (req, res) => {
     });
   }
 
-  
+
 });
 
 
@@ -72,7 +72,6 @@ routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
   try {
 
     const paymentData = await paymentCodeModel.findOne({ "payerId": userUniqueId })
-    console.log("Data", paymentData)
 
     if (!paymentData) {
       return res.status(200).json({ data: [] })
@@ -93,7 +92,7 @@ routes.get("/payment-history/:userUniqueId(.*)", async (req, res) => {
 routes.post("/verify-payment", async (req, res) => {
   try {
     const { reference } = req.body;
-  console.log("users Payment Reference", reference)
+    console.log("users Payment Reference", reference)
     if (!reference) {
       return res.status(400).json({
         success: false,

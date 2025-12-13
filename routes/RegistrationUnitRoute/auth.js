@@ -4,8 +4,9 @@ const routes = express.Router();
 const bcrypt = require("bcrypt");
 const { errorHandling } = require("../../controllers/errorHandler");
 const { adminModel } = require("../../models/admin");
+const { generateToken } = require("../../utils/generateToken");
 
-routes.post("/login", async (req, res) => {
+routes.post("/", async (req, res) => {
      const { email, password } = req.body;
 
      try {
