@@ -7,11 +7,11 @@ const paystack = require("paystack")(process.env.PAYSTACK_SECRET_KEY);
 
 
 
-router.get('/:fullName/:uniqueID(.*)', async (req, res) => {
-     const { fullName, uniqueID } = req.params
+router.get('/:email/:uniqueID(.*)', async (req, res) => {
+     const { email, uniqueID } = req.params
 
      try {
-          const userRegisteredEvent = await UserRegisteredEventsModel.find({ $and: [{ "userProfile.fullName": fullName }, { "userProfile.uniqueID": uniqueID }] })
+          const userRegisteredEvent = await UserRegisteredEventsModel.find({ $and: [{ "userProfile.email": email }, { "userProfile.uniqueID": uniqueID }] })
 
 
           if (userRegisteredEvent.length <= 0) {

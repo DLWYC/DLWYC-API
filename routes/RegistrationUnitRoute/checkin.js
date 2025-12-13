@@ -37,7 +37,10 @@ router.get('/eventAttendees/:eventTitle(.*)', async (req, res) => {
                     uniqueId: attendee?.userProfile?.uniqueID,
                     fullName: attendee?.userProfile?.fullName,
                     email: attendee?.userProfile?.email,
-                    eventDetails: matchingEvent
+                    eventDetails: {
+                         paymentStatus: matchingEvent?.paymentStatus,
+                         paymentTime: matchingEvent?.paymentTime,
+                    }
                };
           }).filter(item => item.eventDetails); // Only include if event was found
 

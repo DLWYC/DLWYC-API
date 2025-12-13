@@ -32,7 +32,6 @@ app.post('/api/register', (req, res) => {
   const newCamper = { id: campers.length + 1, name, age, gender };
   campers.push(newCamper);
 
-  console.log(campers)
 
   // Allocate room
   const availableRooms = hostelRooms[gender.toLowerCase()].filter(

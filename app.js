@@ -57,6 +57,7 @@ const authMiddleware = require('./middleware/auth');
 // User routes
 app.use('/api/userRegistration', require('./routes/UserRoute/userRegistration'));
 app.use('/api/userLogin', require('./routes/UserRoute/userLogin'));
+app.use('/api/updateUserProfile', authMiddleware, require('./routes/UserRoute/updateProfile'));
 app.use('/api/userDashboard', authMiddleware, require('./routes/UserRoute/userDashboard'));
 app.use('/api/payment', require('./routes/payment'));
 app.use('/api/userRegisteredEvents', require('./routes/UserRoute/userRegisteredEvent'));
