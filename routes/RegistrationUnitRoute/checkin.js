@@ -40,7 +40,8 @@ router.get('/eventAttendees/:eventTitle(.*)', async (req, res) => {
                     eventDetails: {
                          paymentStatus: matchingEvent?.paymentStatus,
                          paymentTime: matchingEvent?.paymentTime,
-                    }
+                         checkedInStatus: matchingEvent?.checkedInStatus || false, // ✅ Moved inside eventDetails with consistent naming
+                    },
                };
           }).filter(item => item.eventDetails); // Only include if event was found
 
@@ -52,7 +53,6 @@ router.get('/eventAttendees/:eventTitle(.*)', async (req, res) => {
           res.status(400).json({ errors: error });
      }
 });
-
 
 
 
