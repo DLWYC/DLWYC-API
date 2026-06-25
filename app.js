@@ -1,119 +1,46 @@
-require('dotenv').config();
+require ('./config/instrument.js'); // Sentry instrumentation
+
 const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const compression = require('compression');
-const morgan = require('morgan');
-const rateLimit = require('express-rate-limit');
-const timeout = require('connect-timeout');
-const mongoose = require('mongoose');
+const helmet = require('helmet');  
+const cors =  require('cors');
+const cookieParser = require('cookie-parser')
 
-// IMPORTANT: Add webhook route BEFORE express.json() middleware
-// because we need raw body for signature verification
+const config =  require('./config/index.js');
+const connectDB = require('./config/database.js');
+const logger = require('./config/logger.js');
+const corsOption = require('./config/cors.js');
+
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+app.use(helmet());
+app.use(cors(corsOption));
+app.use(express.json())
+app.use(cookieParser())
 
-app.set('trust proxy', 1);
+const PORT = config.port
 
-// ===== MIDDLEWARE (ORDER MATTERS!) =====
-app.use(helmet()); // Security headers
-app.use(compression()); // Compress responses
-app.use(cors());
-app.use(morgan('combined')); // Logging
-app.use(timeout('30s')); // Request timeout
 
-// Body parsing with limits
-app.use(express.json({ limit: '50mb' }));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+// Routes
+const authenticationRoutes = require('./routes/User/authentication.js');
 
-// Rate limiting
-const limiter = rateLimit({
-     windowMs: 15 * 60 * 1000,
-     max: 100
-});
-app.use('/api/', limiter);
 
-// Timeout handler
-app.use((req, res, next) => {
-     if (!req.timedout) next();
-});
+app.use('/api/auth', authenticationRoutes);
 
-// ===== DATABASE =====
-mongoose.connect(process.env.DB_URL, {
-     maxPoolSize: 10,
-     minPoolSize: 2,
-     socketTimeoutMS: 45000,
-     serverSelectionTimeoutMS: 5000,
-})
-     .then(() => console.log('✓ Database Connected'))
-     .catch(err => {
-          console.error('✗ Database Connection Failed:', err);
-          process.exit(1);
-     });
 
-// ===== ROUTES =====
-const authMiddleware = require('./middleware/auth');
+app.get("/health", (req, res) =>
+  res.json({ ok: true, uptime: process.uptime(), dbState: mongoose.connection.readyState })
+);
 
-// User routes
-app.use('/api/userRegistration', require('./routes/UserRoute/userRegistration'));
-app.use('/api/userLogin', require('./routes/UserRoute/userLogin'));
-app.use('/api/updateUserProfile', authMiddleware, require('./routes/UserRoute/updateProfile'));
-app.use('/api/userDashboard', authMiddleware, require('./routes/UserRoute/userDashboard'));
-app.use('/api/payment', require('./routes/payment'));
-app.use('/api/userRegisteredEvents', require('./routes/UserRoute/userRegisteredEvent'));
-app.use('/api/forgotPassword', require('./routes/UserRoute/userForgotPassword'));
-app.use('/api/resetPassword', require('./routes/UserRoute/userResetPassword'));
 
-// Registration unit
-app.use('/api/registrationUnit/auth', require('./routes/RegistrationUnitRoute/auth'));
-app.use('/api/registrationUnit', require('./routes/RegistrationUnitRoute/checkin'));
-app.use('/api/hostels', require('./routes/HostelRoute/hostelRoute'));
-app.use('/api/allocations', require('./routes/HostelRoute/allocationRoutes'));
+async function startServer () {
+     try{
+          await connectDB();
+          logger.info("Database Connected Successfully")
+          app.listen(PORT, "0.0.0.0", () => logger.info(`Server running on port ${PORT}`));
+     }
+     catch(error){
+          logger.fatal("Failed to start server", error)
+     }
+ }
 
-// Admin routes
-app.use('/api/admin/events', require('./routes/AdminRoute/events'));
-app.use('/api/admin/generalEvent', require('./routes/AdminRoute/generalEvent'));
-
-// ===== ERROR HANDLING =====
-// 404 handler
-app.use((req, res) => {
-     res.status(404).json({ error: 'Route not found' });
-});
-
-// Global error handler
-app.use((err, req, res, next) => {
-     console.error('Error:', err);
-     res.status(err.status || 500).json({
-          error: process.env.NODE_ENV === 'production'
-               ? 'Internal server error'
-               : err.message
-     });
-});
-
-// ===== SERVER STARTUP =====
-const server = app.listen(PORT, () => {
-     console.log(`✓ Server running on port ${PORT}`);
-});
-
-// ===== GRACEFUL SHUTDOWN =====
-const gracefulShutdown = () => {
-     console.log('Shutting down gracefully...');
-     server.close(() => {
-          mongoose.connection.close(false, () => {
-               console.log('✓ Connections closed');
-               process.exit(0);
-          });
-     });
-};
-
-process.on('SIGTERM', gracefulShutdown);
-process.on('SIGINT', gracefulShutdown);
-
-process.on('uncaughtException', (err) => {
-     console.error('Uncaught Exception:', err);
-     process.exit(1);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-     console.error('Unhandled Rejection:', reason);
-});
+ startServer()

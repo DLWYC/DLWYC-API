@@ -1,36 +1,42 @@
 {
-  "name": "dlwyc_api",
+  "name": "dlwyc-api",
   "version": "1.0.0",
-  "description": "",
+  "type": "commonjs",
   "main": "app.js",
-  "start": "node app.js",
   "scripts": {
-    "start": "npm i && nodemon app.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DLWYC/DLWYC-API.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DLWYC/DLWYC-API/issues"
+  },
+  "homepage": "https://github.com/DLWYC/DLWYC-API#readme",
+  "description": "",
   "dependencies": {
-    "axios": "^1.7.7",
-    "bcrypt": "^5.1.1",
-    "cloudinary": "^2.8.0",
-    "compression": "^1.8.1",
-    "connect-timeout": "^1.9.1",
-    "cors": "^2.8.5",
-    "dotenv": "^16.4.5",
-    "express": "^4.19.2",
-    "express-rate-limit": "^8.2.1",
-    "helmet": "^8.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.5.2",
-    "morgan": "^1.10.1",
-    "nodemailer": "^6.9.15",
-    "nodemon": "^3.1.4",
-    "paystack": "^2.0.1",
-    "punycode": "^2.3.1",
-    "redis": "^4.7.0",
-    "resend": "^6.4.2",
-    "uuid": "^10.0.0",
-    "validator": "^13.12.0"
+    "@sentry/node": "^10.59.0",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.10.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "fastq": "^1.20.1",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.1",
+    "multer": "^2.2.0",
+    "nodemailer": "^9.0.1",
+    "pino": "^10.3.1",
+    "resend": "^6.14.0",
+    "validator": "^13.15.35"
+  },
+  "devDependencies": {
+    "pino-pretty": "^13.1.3"
   }
 }
