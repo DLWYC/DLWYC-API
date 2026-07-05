@@ -21,10 +21,14 @@ const PORT = config.port
 
 
 // Routes
-const authenticationRoutes = require('./routes/User/authentication.js');
+const authenticationRoutes = require('./routes/Authentication/authentication.js');
+const userDashboardRoutes = require('./routes/User/userDashboard.js');
+const eventsRoutes = require('./routes/Events/events.js')
 
 
 app.use('/api/auth', authenticationRoutes);
+app.use('/api/user', userDashboardRoutes);
+app.use('/api/events', eventsRoutes);
 
 
 app.get("/health", (req, res) =>

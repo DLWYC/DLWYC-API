@@ -88,12 +88,13 @@ const UserSchema = new mongoose.Schema(
                     "Owutu",
                     "Satellite",
                     "Somolu",
+                    ""
                ],
-               required: [true, ' Please Select Your Archdeaconry']
+               //required: [true, ' Please Select Your Archdeaconry']
           },
           parish: {
                type: String,
-               required: [true, 'Please Select Your Parish']
+               //required: [true, 'Please Select Your Parish']
           },
      },
      { timestamps: true }
@@ -139,16 +140,16 @@ UserSchema.pre('save', async function (next) {
 
      // 2. Skip password hashing if it hasn't changed
      if (!this.isModified('password')) {
-          return next();
+          return ;
      }
 
      // 3. Hash the new or modified password
      try {
           this.password = await bcrypt.hash(this.password, 10);
-          next(); 
      } catch (error) {
+          console.log("Error", error)
           logger.error(`Bcrypt Pre-Save Hook Error: ${error.message}`);
-          next(error); 
+          throw error; 
      }
 });
 
@@ -168,14 +169,6 @@ UserSchema.methods.comparePassword = async function (candidatePassword) {
 }
 
 
-UserSchema.methods.generateUserToken = async function () {
-     const accessToken = jwt.sign({
-          uniqueId: this.uniqueID,
-          role: 'user'
-     }, config.security.jwtSecret, { expiresIn: config.security.jwtExpiration })
-
-     return accessToken
-}
 
 
 const UserModel = new mongoose.model("user", UserSchema);

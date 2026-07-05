@@ -2,6 +2,16 @@ const config = require('../config/index')
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 
+
+const generateAccessToken = (user) => {
+     const accessToken = jwt.sign({
+          uniqueId: user.uniqueID,
+          role: 'user'
+     }, config.security.jwtSecret, { expiresIn: config.security.jwtExpiration })
+
+     return accessToken
+}
+
 const generateRefreshToken = (user) => {
      try {
 
@@ -34,4 +44,4 @@ const hashPassword = async (newPassword)=>{
 }
 
 
-module.exports = { generateRefreshToken, verifyRefreshToken, hashPassword }
+module.exports = { generateRefreshToken, verifyRefreshToken, hashPassword, generateAccessToken }

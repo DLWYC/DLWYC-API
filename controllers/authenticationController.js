@@ -1,11 +1,22 @@
 const { UserModel } = require("../models/users");
 const logger = require("../config/logger");
-const { generateRefreshToken, verifyRefreshToken, hashPassword } = require("../services/authenticationService")
+const { generateAccessToken, generateRefreshToken, verifyRefreshToken, hashPassword } = require("../services/authenticationService")
 const config = require("../config/index");
 const cloudinary = require('../config/cloudinary');
 const { errorHandler } = require("../utils/errorhandler");
 const jwt = require('jsonwebtoken');
 const emailQueue = require("../services/emailingService");
+
+const timestamp = Date.now();
+const formatter = new Intl.DateTimeFormat('en-US', {
+     year: 'numeric',
+     month: '2-digit',
+     day: '2-digit',
+     hour: '2-digit',
+     minute: '2-digit',
+     second: '2-digit',
+     hour12: false
+});
 
 const LoginController = async (req, res) => {
      try {
@@ -18,32 +29,42 @@ const LoginController = async (req, res) => {
           // Check To Seee If User Exist In The DB
           const user = await UserModel.findOne({ email }).select('+password');
           if (!user) {
-               return res.status(401).json({ message: "Invalid Credentials" })
+               logger.error(`Logging with invalid credentials`)
+               return res.status(401).json({ error: "Wrong User Name Or Password" })
           }
 
           const isMatch = await user.comparePassword(password)
           if (!isMatch) {
-               return res.status(401).json({ message: "Invalid Credentials" })
+               return res.status(401).json({ error: "Wrong User Name Or Password" })
           }
 
-          const [accessToken, refreshToken] = await Promise.all([user.generateUserToken(), generateRefreshToken(user)])
+          const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])
 
-          res.cookie('refreshToken', refreshToken, {
+          const cookieOptions = {
                httpOnly: true,
                secure: config.env === 'production' ? true : false,
-               sameSite: 'strict',
+               // sameSite: 'strict',
+          }
+
+          res.cookie('accessToken', accessToken, {
+               ...cookieOptions,
+               maxAge: 5 * 60 * 1000
+          })
+
+          res.cookie('refreshToken', refreshToken, {
+               ...cookieOptions,
                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
           })
 
+          logger.info(`${email} Logged in Successfully @ ${formatter.format(timestamp)}`)
           return res.status(200).json({
                message: "User Logged In Successfully",
-               accessToken
           })
 
      }
      catch (error) {
-          logger.error("Error Logging In User", error)
-          res.status(500).json({ message: `Error Logging In User ${error.message}` })
+          logger.error(`Error Logging In User ${error}`)
+          res.status(500).json({ error: `Error Logging In User ${error.message}` })
      }
 
 }
@@ -69,7 +90,7 @@ const NewUserRegistrationController = async (req, res) => {
                password: password,
                archdeaconry: archdeaconry,
                parish: parish,
-               membershipType: membershipType
+               membershipType: membershipType.toLowerCase()
           })
 
           logger.info(`${response.fullName} Account Created Successfully`)
@@ -95,7 +116,7 @@ const NewUserProfilePictureUpload = async (req, res) => {
                res.status(400).json({ error: "Please Provide An Image" })
           }
 
-          const user = await UserModel.findOne({ uniqueID })
+          const user = await UserModel.findOne({ uniqueID }).lean()
           if (!user) {
                return res.status(404).json({ error: "User Not Found", type: "Upload Error" })
           }
@@ -140,8 +161,8 @@ const RequestForgetPasswordLinkController = async (req, res) => {
      try {
           const user = await UserModel.findOne({ email }).select('+password').lean()
           if (!user) {
-               logger.error("User Not Found");
-               return res.status(404).json({ error: "Invalid User", type: "Reset Error" })
+               logger.error("Password reset requested for non-existent email address.");
+               return res.status(200).json({ message: "If this email is registered, you'll receive a reset link shortly." });
           }
 
           const resetToken = await jwt.sign({ uniqueID: user?.uniqueID, password: user?.password }, config.security.jwtSecret, { expiresIn: '5m' })
@@ -209,7 +230,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
 
                     <p style="margin:0 0 28px; color:#5c677d; font-size:13.5px; line-height:1.75;">
                       We received a request to reset the password for your account.
-                      Click the button below to get started. This link is only valid for 24 hours.
+                      Click the button below to get started. This link is only valid for 5 Minutes.
                     </p>
 
                     <!-- Expiry badge -->
@@ -217,7 +238,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
                       <tr>
                         <td style="background:#f4f5f8; border-radius:8px; padding:8px 14px;
                           font-size:12.5px; color:#27305f; font-weight:500;">
-                          &#x23F0; Expires in 24 hours &nbsp;·&nbsp; Single use only
+                          &#x23F0; Expires in 5 Minutes &nbsp;·&nbsp; Single use only
                         </td>
                       </tr>
                     </table>
@@ -226,7 +247,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
                     <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom:32px;">
                       <tr>
                         <td align="center" bgcolor="#091e54" style="border-radius:10px;">
-                          <a href="${config.client.domain}/${resetToken}?token=${resetToken}" target="_blank"
+                          <a href="${config.client.domain}/resetPassword?token=${resetToken}" target="_blank"
                             style="display:inline-block; padding:13px 32px; font-size:13.5px;
                             color:#ffffff; font-weight:500; text-decoration:none;
                             border-radius:10px; background:#091e54; letter-spacing:0.3px;">
@@ -292,8 +313,8 @@ const RequestForgetPasswordLinkController = async (req, res) => {
 
 const ResetUserPasswordController = async (req, res) => {
      const { token } = req.query
-     const { newPassword } = req.body
-
+     const { password } = req.body
+     console.log(token, password)
      try {
 
           const decodedUser = await jwt.verify(token, config.security.jwtSecret);
@@ -302,13 +323,7 @@ const ResetUserPasswordController = async (req, res) => {
                return res.status(401).json({ error: "Invalid Credentials", type: "Reset Password" });
           }
 
-          const user = await jwt.verify(token, config.security.jwtSecret)
-          if (!user) {
-               logger.error(`Invalid Credentials for ${user?.uniqueID}`)
-               return res.status(401).json({ error: "Invalid Credentials", type: "Reset Password" })
-          }
-
-          const hashedPassword = await hashPassword(newPassword)
+          const hashedPassword = await hashPassword(password)
 
           const updateResponse = await UserModel.updateOne(
                { uniqueID: decodedUser.uniqueID },
@@ -327,15 +342,15 @@ const ResetUserPasswordController = async (req, res) => {
 
      }
      catch (error) {
-          logger.error(`Error Resetting User Password?`)
-          return res.status(500).json({ error: "Error Resetting User Password", type: "Reset Password" })
+          logger.error(`Error Resetting User Password? ${error}`)
+          return res.status(410).json({ error: "Invalid Token", type: "Reset Password" })
      }
 
 }
 
 
 const UserRefreshTokenController = async (req, res) => {
-     const token = await req.cookies.refreshToken;
+     const token = req.cookies.refreshToken;
      if (!token) {
           logger.error("Unauthorize, No Refresh Token Provided")
           return res.status(401).json({ message: "Unauthorized" })
@@ -343,9 +358,16 @@ const UserRefreshTokenController = async (req, res) => {
 
      try {
           const decoded = await verifyRefreshToken(token);
-          const newAccessToken = await generateRefreshToken(decoded)
+          const newAccessToken = await generateAccessToken(decoded)
 
-          return res.json({ accessToken: newAccessToken })
+          res.cookie('accessToken', newAccessToken, {
+               httpOnly: true,
+               secure: config.env === 'production',
+               // sameSite: 'strict',
+               maxAge: 15 * 60 * 1000
+          })
+
+          return res.status(200).json({ message: "Token refreshed successfully" })
      }
      catch (err) {
           logger.error("Error Generating New Refresh Token")

@@ -8,7 +8,7 @@ router.post('/signup', NewUserRegistrationController)
 router.post('/login', LoginController)
 router.post('/forgotPassword', RequestForgetPasswordLinkController)
 router.post('/resetPassword', ResetUserPasswordController)
-router.get('/refresh', UserRefreshTokenController)
+router.post('/refresh-token', UserRefreshTokenController)
 router.patch('/uploadProfileImage', upload.single('profilePicture'), NewUserProfilePictureUpload)
 
 module.exports = router;
