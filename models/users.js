@@ -40,6 +40,11 @@ const UserSchema = new mongoose.Schema(
                type: String,
                default: null
           },
+          gender: {
+               type: String,
+               required: [true, "Select Your Gender"],
+               enum: ["Male", "Female"]
+          },
           membershipType: {
                type: String,
                required: [true, "Indicate Your Membership Type"],
@@ -140,7 +145,7 @@ UserSchema.pre('save', async function (next) {
 
      // 2. Skip password hashing if it hasn't changed
      if (!this.isModified('password')) {
-          return ;
+          return;
      }
 
      // 3. Hash the new or modified password
@@ -149,7 +154,7 @@ UserSchema.pre('save', async function (next) {
      } catch (error) {
           console.log("Error", error)
           logger.error(`Bcrypt Pre-Save Hook Error: ${error.message}`);
-          throw error; 
+          throw error;
      }
 });
 

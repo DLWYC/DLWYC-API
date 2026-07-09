@@ -56,6 +56,7 @@ const LoginController = async (req, res) => {
                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
           })
 
+          
           logger.info(`${email} Logged in Successfully @ ${formatter.format(timestamp)}`)
           return res.status(200).json({
                message: "User Logged In Successfully",
@@ -116,7 +117,7 @@ const NewUserProfilePictureUpload = async (req, res) => {
                res.status(400).json({ error: "Please Provide An Image" })
           }
 
-          const user = await UserModel.findOne({ uniqueID }).lean()
+          const user = await UserModel.findOne({ uniqueID })
           if (!user) {
                return res.status(404).json({ error: "User Not Found", type: "Upload Error" })
           }

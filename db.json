@@ -1,0 +1,429 @@
+{
+  "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6NTc3MTI2OSwic3NvTG9naW4iOmZhbHNlLCJqdGkiOiI2YTRiZTdiMmNhZDcyOWEwMTFiYWE5NjgiLCJpYXQiOjE3ODMzNTk0MTAsIm5iZiI6MTc4MzM1OTQxMCwiZXhwIjoxNzgzNDQ1ODEwfQ.zLR2UNh8W7lFMxi65Qcu7vJIU4Qdv6dA7_LCX2a9Pvc",
+  "user": {
+    "integrations": [
+      {
+        "business_name": "Diocese Of Lagos West Youth Chaplaincy",
+        "business_type": "registered",
+        "short_name": null,
+        "id": 1245891,
+        "logged_in_user_role": {
+          "id": 34,
+          "name": "admin",
+          "description": "This role grants users the permissions to manage everything on the dashboard"
+        },
+        "country_code": "NG",
+        "country": 1,
+        "sso_enabled": false,
+        "mfa": {
+          "is_required": false,
+          "enforcement_deadline": null
+        }
+      }
+    ],
+    "email": "dlwyouth@gmail.com",
+    "first_name": "Diocese Of Lagos West",
+    "last_name": "Youth Chaplaincy",
+    "phone": "7063234367",
+    "area_code": "0",
+    "calling_code": "+234",
+    "registration_complete": true,
+    "last_login": "2026-07-06T17:36:15.000Z",
+    "wt_access": "none",
+    "is_developer": true,
+    "job_title": "",
+    "truecaller_verified": false,
+    "drip_tag": "merchant - nigeria",
+    "created_from": null,
+    "mfa_enabled": false,
+    "email_verified": true,
+    "id": 5771269,
+    "invited_by": null,
+    "current_integration": 1245891,
+    "passwordLastResetAt": "2025-12-09T19:57:04.000Z",
+    "createdAt": "2024-07-20T22:26:29.000Z",
+    "updatedAt": "2026-07-06T17:36:15.000Z",
+    "ssoLogin": false,
+    "dashboard_preferences": {
+      "pagination": {
+        "use_cursor": true
+      },
+      "timezone": "UTC"
+    },
+    "display_state": "test",
+    "role": {
+      "value": 1829587348619263,
+      "name": "admin",
+      "description": "This role grants users the permissions to manage everything on the dashboard",
+      "integration": 0,
+      "service": "dashboard",
+      "id": 34,
+      "organization": 1,
+      "createdAt": "2018-05-10T23:40:26.000Z",
+      "updatedAt": "2018-09-12T17:28:31.000Z",
+      "is_custom": false
+    },
+    "permissions": [
+      "api-key-*",
+      "api-key-view",
+      "user-view",
+      "user-*",
+      "metrics-*",
+      "settings-*",
+      "settings-view",
+      "transaction-view",
+      "transaction-export",
+      "transaction-dispute",
+      "customer-view",
+      "customer-add",
+      "customer-*",
+      "transfer-view",
+      "transfer-*",
+      "transfer-export",
+      "balance-view",
+      "balance-export",
+      "page-view",
+      "page-*",
+      "plan-view",
+      "plan-*",
+      "settlement-view",
+      "settlement-export",
+      "paymentrequest-view",
+      "paymentrequest-*",
+      "subaccount-*",
+      "subaccount-view",
+      "user-add",
+      "customer-insights",
+      "accounts-*",
+      "accounts-view",
+      "directdebit-*",
+      "charge-*",
+      "request-payout",
+      "product-view",
+      "product-*",
+      "pos-terminal-*",
+      "applepay-*",
+      "refund-pwt",
+      "corporate-cards-*",
+      "corporate-cards-view",
+      "issuing-*",
+      "issuing-view",
+      "connect-*",
+      "directdebit-view"
+    ],
+    "show_mfa_feature": true
+  },
+  "selected_integration": {
+    "business_name": "Diocese Of Lagos West Youth Chaplaincy",
+    "description": "The Diocese of Lagos West Youth Chaplaincy is the vibrant youth arm of the Diocese of Lagos West (Anglican Communion). Committed to nurturing the spiritual, intellectual, and social development of young people, the Chaplaincy provides platforms for engagement through impactful programs, conferences, and community-building activities across all Archdeaconries and churches under the diocese.\n\nTo improve accessibility and streamline event management, the Chaplaincy is integrating Paystack as its official payment merchant. This secure and reliable gateway will facilitate seamless online payments for all youth-related programs and initiatives requiring registration fees through the official youth website.",
+    "rc_number": null,
+    "phone": "7063234367",
+    "email": "dlwyouth@gmail.com",
+    "address": null,
+    "product_name": null,
+    "registration_document_number": null,
+    "registration_document_type": null,
+    "primary_contact_name": null,
+    "primary_contact_email": null,
+    "primary_contact_phone": null,
+    "support_email": "olulodeso@gmail.com",
+    "chargeback_email": null,
+    "logo_path": "https://public-files-paystack-prod.s3.eu-west-1.amazonaws.com/integration-logos/paystack.jpg",
+    "integration_agreement_path": null,
+    "settlement_bank": null,
+    "account_number": null,
+    "registration_document_path": null,
+    "risk_level": "high",
+    "isw_category": 3,
+    "mcc_category": "8661",
+    "flat_rate": 100,
+    "charge_percentage": 1.5,
+    "international_flat_rate": 100,
+    "international_charge_percentage": 3.9,
+    "flat_threshhold": 2500,
+    "transfer_charge": 5000,
+    "settlement_schedule": "T1",
+    "test_redirect_url": "",
+    "test_webhook_endpoint": "https://kind-teeth-appear.loca.lt/api/events/paystack-webhook",
+    "live_redirect_url": "",
+    "live_webhook_endpoint": "",
+    "test_integration_url": null,
+    "test_integration_instruction": null,
+    "email_notification": "instant",
+    "pwc_id": 102501,
+    "is_live": true,
+    "go_live_requested": true,
+    "go_live_requested_at": "2024-11-24T17:44:09.000Z",
+    "live_keys_requested": false,
+    "live_keys_requested_at": null,
+    "reviewed_at": null,
+    "setup_complete": false,
+    "receipts": true,
+    "display_state": "live",
+    "active": true,
+    "short_name": null,
+    "international_toggle_disabled": true,
+    "allow_international_cards": false,
+    "active_channels": [
+      "card",
+      "bank",
+      "ussd",
+      "bank_transfer"
+    ],
+    "allowed_currencies": [
+      "NGN"
+    ],
+    "allow_whitelist": false,
+    "charge_from_dashboard": false,
+    "can_transfer": true,
+    "transfer_using_otp": true,
+    "payouts_on_hold": false,
+    "go_live_date": "2025-10-08T08:47:11.000Z",
+    "payments_session_timeout": 0,
+    "metadata": null,
+    "transfer_notification": "instant",
+    "business_category": null,
+    "business_size": "small",
+    "business_type": "registered",
+    "website_url": "https://dlwyouth.org",
+    "social_urls": {
+      "facebook": "https://www.facebook.com/dlwyouthchaplaincy",
+      "instagram": "https://www.instagram.com/dlwyouth/",
+      "twitter": ""
+    },
+    "is_under_investigation": false,
+    "is_disabled": false,
+    "disable_reason": null,
+    "disable_at": null,
+    "identity_evidence_path": null,
+    "director_identity_evidence_path": null,
+    "bvn": null,
+    "bvn_date_of_birth": null,
+    "go_live_status": "confirmed",
+    "registration_packet_path": null,
+    "default_currency": "NGN",
+    "transfer_notification_to_recipient": "instant",
+    "send_transfer_email_otp": true,
+    "fast_checkout_enabled": false,
+    "id": 1245891,
+    "primary_user": 5771269,
+    "organization": 1,
+    "createdAt": "2024-07-20T22:26:29.000Z",
+    "updatedAt": "2026-07-06T17:29:34.000Z",
+    "transfer_fees": [
+      {
+        "fee": 5000,
+        "thresholds": [
+          {
+            "max": 500000,
+            "fee": 1000
+          },
+          {
+            "max": 5000000,
+            "fee": 2500
+          }
+        ],
+        "currency": "NGN"
+      }
+    ],
+    "consent_received": false,
+    "attributes": {
+      "id": 1145436,
+      "integration": 1245891,
+      "country": {
+        "id": 1,
+        "active_for_dashboard_onboarding": true,
+        "name": "Nigeria",
+        "iso_code": "NG",
+        "default_currency_code": "NGN",
+        "integration_defaults": {},
+        "calling_code": "+234",
+        "pilot_mode": false,
+        "relationships": {
+          "currency": {
+            "type": "currency",
+            "data": [
+              "NGN"
+            ],
+            "supported_currencies": {
+              "NGN": {
+                "bank": {
+                  "bank_type": "nuban",
+                  "branch_code": false,
+                  "branch_code_type": "text",
+                  "account_name": false,
+                  "account_verification_required": true,
+                  "account_number_label": "accountNumber",
+                  "account_number_pattern": {
+                    "exact_match": true,
+                    "pattern": "[0-9]{10}"
+                  },
+                  "documents": [],
+                  "show_account_number_tooltip": false
+                }
+              },
+              "USD": {
+                "bank": {
+                  "bank_type": "nuban",
+                  "required_fields": [
+                    "bank",
+                    "account_number"
+                  ],
+                  "branch_code": false,
+                  "branch_code_type": "text",
+                  "account_name": false,
+                  "account_verification_required": true,
+                  "account_number_label": "accountNumber",
+                  "account_number_pattern": {
+                    "exact_match": true,
+                    "pattern": ""
+                  },
+                  "documents": [],
+                  "notices": [
+                    "USD can currently only be settled into Zenith Bank USD accounts.",
+                    "You'll receive USD settlements 2 working days after payment has been made.",
+                    "In case of fraudulent transactions involving international payments, Paystack will reverse the transaction and deduct the amount from your balance."
+                  ]
+                }
+              }
+            }
+          },
+          "integration_feature": {
+            "type": "integration_feature",
+            "data": []
+          },
+          "integration_type": {
+            "type": "integration_type",
+            "data": [
+              "ITYPE_001",
+              "ITYPE_002",
+              "ITYPE_003"
+            ]
+          },
+          "payment_method": {
+            "type": "payment_method",
+            "data": [
+              "PAYM_001",
+              "PAYM_002",
+              "PAYM_003",
+              "PAYM_004"
+            ]
+          }
+        }
+      },
+      "industry": null,
+      "integration_type": {
+        "id": 2,
+        "code": "ITYPE_002",
+        "label": "registered",
+        "display_name": "Registered Business",
+        "description": "Choose this if your business is registered with an RC Number, BN Number, NEPZA Number etc",
+        "is_active": true,
+        "relationships": {
+          "kyc_requirement": {
+            "type": "kyc_requirement",
+            "data": [
+              "KYCREQ_001",
+              "KYCREQ_014",
+              "KYCREQ_025"
+            ]
+          }
+        },
+        "upgradable_to": []
+      },
+      "legal_business_name": "Diocese Of Lagos West Youth Chaplaincy",
+      "duplicated_from_integration": null,
+      "compliance_status": "APPROVED",
+      "compliance_due_date": "2024-08-19T00:00:00.000Z",
+      "incorporation_date": null,
+      "country_code": "NG",
+      "industry_code": "NONPROFITS",
+      "registration_number": null,
+      "registration_type": "NG-CACIT",
+      "ownership_type": "NG-CACIT-OWN",
+      "industry_categories": "RELIGIOUS",
+      "area_code": "0",
+      "calling_code": "+234",
+      "form_three_evidence_path": null,
+      "settlement_account_type": "bank_account",
+      "international_requested": false,
+      "email_rules": null,
+      "compliance_documents_submitted": true,
+      "incorporated_before_2017": 0,
+      "has_refreshed_incorporation_documents": true,
+      "process_amex_cards": false,
+      "is_terminal_integration": false,
+      "mfa_is_required": false,
+      "mfa_enforcement_deadline": null,
+      "legal_agreements": null,
+      "has_saved_cards": null,
+      "saved_cards_enabled": null,
+      "passes_fees": null,
+      "passes_dva_fees": null,
+      "direct_debit_enabled": true,
+      "settlement_days": null,
+      "can_refund": 1,
+      "createdAt": "2024-07-20T22:26:29.000Z",
+      "updatedAt": "2025-12-13T14:37:11.000Z"
+    },
+    "terminal_integration_attribute": null,
+    "is_terminal_active": false,
+    "is_dormant": false,
+    "is_registration_type_supported_for_terminal": true,
+    "office_address": {
+      "id": 676676,
+      "street_line_one": "103 ODUDUWA CRESCENT, GRA, IKEJA, LAGOS STATE, NIGERIA.",
+      "street_line_two": "",
+      "post_code": "100001",
+      "model": "integration",
+      "model_row": 1245891,
+      "locality": 516,
+      "city": "Ikeja",
+      "state": "Lagos",
+      "country": "Nigeria",
+      "country_iso_code": "NG",
+      "type": "office",
+      "lga": "Ikeja"
+    },
+    "registered_address": {
+      "id": 676677,
+      "street_line_one": "103 ODUDUWA CRESCENT, GRA, IKEJA, LAGOS STATE, NIGERIA.",
+      "street_line_two": "",
+      "post_code": "100001",
+      "model": "integration",
+      "model_row": 1245891,
+      "locality": 516,
+      "city": "Ikeja",
+      "state": "Lagos",
+      "country": "Nigeria",
+      "country_iso_code": "NG",
+      "type": "registered",
+      "lga": "Ikeja"
+    },
+    "available_channels": [
+      "bank",
+      "card",
+      "ussd",
+      "bank_transfer",
+      "payattitude"
+    ],
+    "blacklisted_channels": [],
+    "agreements": {
+      "settlement_managed_account": {
+        "agreements": [],
+        "visible": false
+      }
+    },
+    "payouts_on_hold_reason": null,
+    "chargeback_emails": [
+      "olulodeso@gmail.com",
+      "dlwyouth@gmail.com"
+    ],
+    "logged_in_user_role": {
+      "id": 34,
+      "name": "admin",
+      "description": "This role grants users the permissions to manage everything on the dashboard"
+    }
+  },
+  "token_expiry": 1783445810
+}

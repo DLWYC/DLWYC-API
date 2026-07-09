@@ -22,15 +22,24 @@ const EventSchema = new mongoose.Schema({
           type: String,
           required: [true, "Please Provide A Description For The Event"]
      },
-     eventPaymentType: {
+     eventType: {
           type: String,
           required: [true, "Please Provide A Payment Type"],
           enum: ["Paid", "Free"],
+     },
+     eventCapacity: {
+          type: Number,
+          default: 500
+     },
+     registeredCount: {
+          type: Number,
+          default: 0
      }
 })
 
 
+
 EventSchema.index({ eventDate: -1});
-const EventModel = new mongoose.model("Events", EventSchema)
+const EventModel = new mongoose.model("events", EventSchema)
 
 module.exports = {EventModel};

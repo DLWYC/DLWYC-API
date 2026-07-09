@@ -5,6 +5,10 @@ require('dotenv').config();
 const config = {
      env: process.env.NODE_ENV, // the enviroment we are working with 
      port: process.env.PORT || 5001,
+     paystack:{
+          secret_key: process.env.PAYSTACK_SECRET_KEY,
+          callbackUrl: process.env.PAYSTACK_CALLBACK_URL
+     },
      client: {
           domain: process.env.FRONTEND_DOMAIN
      },
