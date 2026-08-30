@@ -9,6 +9,7 @@ const config =  require('./config/index.js');
 const connectDB = require('./config/database.js');
 const logger = require('./config/logger.js');
 const corsOption = require('./config/cors.js');
+const mongoose = require('mongoose');
 
 
 const app = express();

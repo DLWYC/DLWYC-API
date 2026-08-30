@@ -8,6 +8,42 @@ const { MembersCodeModel } = require("../models/membersCode")
 const mongoose = require('mongoose')
 
 
+
+const FetchAllEventController = async (req, res) => {
+     try {
+          const events = await EventModel.find().lean()
+          logger.info(`Events Found: ${events}`)
+          return res.json({ events, type: "Fetch All Events" })
+     }
+     catch (error) {
+          logger.error(`Failed to fetch evnets ${error}`)
+          res.status(401).json({ error: "Failed to fetch events", type: "Fetch All Events" })
+     }
+}
+
+
+const FetchEventUserHasRegisteredFor = async (req, res) => {
+     const { uniqueId } = req.user
+
+     try {
+
+          const user = await UserModel.findOne({ uniqueID: uniqueId }).select('_id').lean()
+          const eventsFound = await UserEventRegistrationModel.findOne({ user: user?._id }).select('events').lean()
+          const registeredEvents = eventsFound?.events || []
+          logger.info(`Events Found For User ${uniqueId}, ${registeredEvents}`)
+          res.status(200).json({ events: registeredEvents, type: "Fetch User Events" })
+     }
+     catch (error) {
+          logger.error(`Error fetching events user registered for: ${error.stack}`);
+          return res.status(500).json({
+               error: "Internal Server Error",
+               type: "Fetch User Events"
+          });
+     }
+
+}
+
+
 const FreeEventRegistrationController = async (req, res) => {
      const uniqueID = req.user.uniqueId
      const { eventId } = req.body
@@ -95,6 +131,7 @@ const FreeEventRegistrationController = async (req, res) => {
                },
                {
                     session,
+                    upsert: true,
                     returnDocument: 'after'
                }
           )
@@ -127,6 +164,7 @@ const FreeEventRegistrationController = async (req, res) => {
 const eventCodeVerificationController = async (req, res) => {
      const uniqueID = req.user.uniqueId
      const { eventId, code } = req.body
+     console.log(eventId, code)
 
      if (!eventId || !code) {
           logger.error(`Missing Credentials or required Parameters :: Code Verification`)
@@ -139,7 +177,7 @@ const eventCodeVerificationController = async (req, res) => {
 
           const user = await UserModel.findOne({ uniqueID }).select('_id').session(session).lean();
 
-         
+
           const [eventExists, alreadyHasTicket] = await Promise.all([
                EventModel.findById(eventId).select('_id').session(session).lean(),
                UserEventRegistrationModel.findOne({
@@ -225,4 +263,4 @@ const eventCodeVerificationController = async (req, res) => {
 
 
 
-module.exports = { FreeEventRegistrationController, eventCodeVerificationController }
+module.exports = { FreeEventRegistrationController, eventCodeVerificationController, FetchAllEventController, FetchEventUserHasRegisteredFor }

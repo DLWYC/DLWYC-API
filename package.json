@@ -33,6 +33,7 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.1",
     "multer": "^2.2.0",
+    "nanoid": "^6.0.1",
     "nodemailer": "^9.0.1",
     "paystack": "^2.0.1",
     "pino": "^10.3.1",

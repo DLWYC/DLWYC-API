@@ -27,6 +27,9 @@ const EventSchema = new mongoose.Schema({
           required: [true, "Please Provide A Payment Type"],
           enum: ["Paid", "Free"],
      },
+     eventPrice: {
+          type: String
+     },
      eventCapacity: {
           type: Number,
           default: 500

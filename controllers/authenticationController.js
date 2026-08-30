@@ -39,6 +39,7 @@ const LoginController = async (req, res) => {
           }
 
           const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])
+          console.log("Access Token: ", accessToken)
 
           const cookieOptions = {
                httpOnly: true,
@@ -48,7 +49,7 @@ const LoginController = async (req, res) => {
 
           res.cookie('accessToken', accessToken, {
                ...cookieOptions,
-               maxAge: 5 * 60 * 1000
+               maxAge: 10 * 60 * 1000
           })
 
           res.cookie('refreshToken', refreshToken, {
@@ -56,7 +57,7 @@ const LoginController = async (req, res) => {
                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
           })
 
-          
+
           logger.info(`${email} Logged in Successfully @ ${formatter.format(timestamp)}`)
           return res.status(200).json({
                message: "User Logged In Successfully",
@@ -70,6 +71,24 @@ const LoginController = async (req, res) => {
 
 }
 
+
+const LogOutController = async (req, res) => {
+     const { uniqueId } = req.user
+     try {
+          res.clearCookie('accessToken', { httpOnly: true, secure: config.env === 'production', path: '/' });
+          res.clearCookie('refreshToken', { httpOnly: true, secure: config.env === 'production', path: '/' });
+
+
+          logger.info(`${uniqueId} Logged out Successfully @ ${formatter.format(Date.now())}`)
+          return res.status(200).json({
+               message: "User Logged Out Successfully",
+          })
+     }
+     catch (error) {
+          logger.error(`Error Logging User Out ${error}`)
+          res.status(500).json({ error: `Error Logging User out ${error.message}` })
+     }
+}
 
 const NewUserRegistrationController = async (req, res) => {
      try {
@@ -375,4 +394,4 @@ const UserRefreshTokenController = async (req, res) => {
      }
 }
 
-module.exports = { LoginController, UserRefreshTokenController, NewUserRegistrationController, NewUserProfilePictureUpload, RequestForgetPasswordLinkController, ResetUserPasswordController }
+module.exports = { LoginController, UserRefreshTokenController, NewUserRegistrationController, NewUserProfilePictureUpload, RequestForgetPasswordLinkController, ResetUserPasswordController, LogOutController }
