@@ -45,11 +45,11 @@ const UserSchema = new mongoose.Schema(
                required: [true, "Select Your Gender"],
                enum: ["Male", "Female"]
           },
-          membershipType: {
-               type: String,
-               required: [true, "Indicate Your Membership Type"],
-               enum: ['member', 'guest']
-          },
+          // membershipType: {
+          //      type: String,
+          //      required: [true, "Indicate Your Membership Type"],
+          //      enum: ['member', 'guest']
+          // },
           age: {
                type: String,
                required: [true, "Please Enter Your Age"],
@@ -108,7 +108,7 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.index({ uniqueID: 1, fullName: 1 }, { unique: true });
 UserSchema.index({ email: 1 }, { unique: true });
-UserSchema.index({ membershipType: 1 })
+// UserSchema.index({ membershipType: 1 })
 
 // UserSchema.pre('save', async function (next) {
 //      if (this.isNew && !this.uniqueID) {

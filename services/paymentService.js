@@ -9,7 +9,9 @@ const { EventModel } = require('../models/events');
 const { FailedRegistrationModel } = require('../models/failedRegistration')
 const { MembersCodeModel } = require('../models/membersCode')
 
+
 const InitializeTransaction = async (email, amount, reference, userId, eventId, amountOfPeople) => {
+   
      console.log(email, amount, reference, userId, eventId, amountOfPeople)
      try {
 
@@ -79,6 +81,7 @@ const InitiatePaystackRefund = async (reference, amountInKobo) => {
 
 const ProccessSuccessfulCharge = async (payload) => {
      const { reference, metadata, channel, paid_at, amount } = payload;
+     console.log("Reference", reference, "Metadata", metadata, "Channel", channel, "Paid At", paid_at, "Amount", amount)
      const { userId, eventId, amountOfPeople } = metadata;
      const headCounts = parseInt(amountOfPeople, 10);
      let membersCodePayLoad;

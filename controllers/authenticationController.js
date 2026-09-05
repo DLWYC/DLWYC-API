@@ -18,6 +18,12 @@ const formatter = new Intl.DateTimeFormat('en-US', {
      hour12: false
 });
 
+const cookieOptions = {
+     httpOnly: true,
+     secure: config.env === 'production' ? true : false,
+     // sameSite: 'strict',
+}
+
 const LoginController = async (req, res) => {
      try {
           const { email, password } = req.body
@@ -41,11 +47,6 @@ const LoginController = async (req, res) => {
           const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])
           console.log("Access Token: ", accessToken)
 
-          const cookieOptions = {
-               httpOnly: true,
-               secure: config.env === 'production' ? true : false,
-               // sameSite: 'strict',
-          }
 
           res.cookie('accessToken', accessToken, {
                ...cookieOptions,
@@ -92,7 +93,7 @@ const LogOutController = async (req, res) => {
 
 const NewUserRegistrationController = async (req, res) => {
      try {
-          const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, password, profilePicture, membershipType } = req.body;
+          const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, password, profilePicture } = req.body;
 
           // Check IF User Exist Already
           const existingUser = await UserModel.findOne({ email }).lean()
@@ -101,7 +102,7 @@ const NewUserRegistrationController = async (req, res) => {
                return res.status(409).json({ message: "Sorry, this user has registered before" })
           }
 
-          const response = await UserModel.create({
+          const user = await UserModel.create({
                fullName: fullName,
                email: email,
                phoneNumber: phoneNumber,
@@ -110,11 +111,24 @@ const NewUserRegistrationController = async (req, res) => {
                password: password,
                archdeaconry: archdeaconry,
                parish: parish,
-               membershipType: membershipType.toLowerCase()
+          })
+          
+          const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])
+          console.log("Access Token: ", accessToken)
+
+
+          res.cookie('accessToken', accessToken, {
+               ...cookieOptions,
+               maxAge: 10 * 60 * 1000
           })
 
-          logger.info(`${response.fullName} Account Created Successfully`)
-          return res.status(201).json({ message: `${response.fullName} Account Created Successfully` })
+          res.cookie('refreshToken', refreshToken, {
+               ...cookieOptions,
+               maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+          })
+
+          logger.info(`${user.fullName} Account Created Successfully`)
+          return res.status(201).json({ message: `${user.fullName} Account Created Successfully` })
 
      }
      catch (error) {
@@ -391,6 +405,7 @@ const UserRefreshTokenController = async (req, res) => {
      }
      catch (err) {
           logger.error("Error Generating New Refresh Token")
+          return res.status(500).json({ message: "Error Generating Refresh Token" })
      }
 }
 

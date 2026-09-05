@@ -15,7 +15,6 @@ const authenticateToken = (req, res, next) => {
      try {
           const decoded = jwt.verify(token, config.security.jwtSecret)
           req.user = decoded
-          console.log("Decoded Token", decoded)
           next()
      }
      catch (error) {
