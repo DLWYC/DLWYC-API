@@ -20,8 +20,8 @@ const formatter = new Intl.DateTimeFormat('en-US', {
 
 const cookieOptions = {
      httpOnly: true,
-     secure: config.env === 'production' ? true : false,
-     // sameSite: 'strict',
+     secure: true,
+     sameSite: 'none',
 }
 
 const LoginController = async (req, res) => {
