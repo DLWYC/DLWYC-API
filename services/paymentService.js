@@ -8,6 +8,8 @@ const { EventAttendeeModel } = require('../models/eventsAttendees')
 const { EventModel } = require('../models/events');
 const { FailedRegistrationModel } = require('../models/failedRegistration')
 const { MembersCodeModel } = require('../models/membersCode')
+const { EventReservationModel } = require('../models/eventReservation')
+
 
 
 const InitializeTransaction = async (email, amount, reference, userId, eventId, amountOfPeople) => {
@@ -196,7 +198,8 @@ const ProccessSuccessfulCharge = async (payload) => {
                          { $push: { attendees: { user: userId, code: payersRegistrationCode } } },
                          { session, upsert: true, new: true }
                     ),
-                    EventModel.findByIdAndUpdate(eventId, { $inc: { registeredCount: headCounts } }, { session, new: true })
+                    EventModel.findByIdAndUpdate(eventId, { $inc: { registeredCount: headCounts } }, { session, new: true }),
+                    EventReservationModel.deleteOne({eventId: eventId, userId: userId}).session(session) // Clean up any existing reservation holds for this user and event
                ];
 
                if (membersCodePayLoad) {

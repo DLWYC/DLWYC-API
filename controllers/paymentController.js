@@ -72,15 +72,6 @@ const InitializePaystackTransactionController = async (req, res) => {
                // We make an atomic timestamp update on the parent Event document. 
                // This forces any concurrent threads (out of our 20 users) to halt and wait in line, 
                // ensuring the capacity math checks below are perfectly serialised and 100% accurate.
-               const lockedEvent = await EventModel.findOneAndUpdate(
-                    { _id: eventId },
-                    { $set: { updatedAt: new Date() } },
-                    { session, new: true }
-               ).select('eventCapacity registeredCount');
-
-               if (!lockedEvent) {
-                    throw { status: 404, error: "EVENT_NOT_FOUND", type: "PAYMENT INITIALIZATION" };
-               }
 
                // 3. Check if the user has already completely registered/paid for this event initially
                const existingRegistration = await UserEventRegistrationModel.findOne({
@@ -92,17 +83,28 @@ const InitializePaystackTransactionController = async (req, res) => {
                     throw { status: 409, error: "USER_ALREADY_REGISTERED", type: "PAYMENT INITIALIZATION" };
                }
 
+
+               const lockedEvent = await EventModel.findOneAndUpdate(
+                    { _id: eventId },
+                    { $set: { updatedAt: new Date() } },
+                    { session, new: true }
+               ).select('eventCapacity registeredCount');
+
+               if (!lockedEvent) {
+                    throw { status: 404, error: "EVENT_NOT_FOUND", type: "PAYMENT INITIALIZATION" };
+               }
+
+
                // 4. Check if there are active available seats left
                const eventReservationAggregation = await EventReservationModel.aggregate([
                     { $match: { eventId: new mongoose.Types.ObjectId(eventId) } },
-                    { $unwind: "$users" },
-                    { $group: { _id: "$eventId", totalReserved: { $sum: "$users.amountOfPeople" } } } // Fixed aggregation path logic
+                    { $group: { _id: "$eventId", totalReserved: { $sum: "$amountOfPeople" } } } // Fixed aggregation path logic
                ]).session(session);
 
                const totalReserved = eventReservationAggregation.length > 0 ? eventReservationAggregation[0].totalReserved : 0;
                const absoluteAvailableSeats = lockedEvent.eventCapacity - (lockedEvent.registeredCount + totalReserved);
 
-               console.log("Available seats: ", absoluteAvailableSeats, "Total Reserved: ", totalReserved, "Head Count: ", headCount);
+               console.log("Available seats: ", absoluteAvailableSeats, "Total Reserved: ", totalReserved, "Head Count: ", headCount, "Event Aggregation: ", eventReservationAggregation);
 
                if (headCount > absoluteAvailableSeats) {
                     logger.error(`Not enough seats available. Requested: ${headCount}, Available: ${absoluteAvailableSeats}`);
@@ -110,10 +112,9 @@ const InitializePaystackTransactionController = async (req, res) => {
                }
 
                // 5. Check if user already has a pending reservation hold for this event
-               const existingUserReservation = await EventReservationModel.findOne({
-                    eventId: eventId,
-                    "users.userId": userId
-               }).session(session).lean();
+               const existingUserReservation = await EventReservationModel.findOne({ userId: userId, eventId: eventId }).session(session).lean();
+
+               console.log("USer reservation: ", existingUserReservation);
 
                if (existingUserReservation) {
                     throw { status: 409, error: "USER_ALREADY_RESERVED", type: "PAYMENT INITIALIZATION" };
@@ -122,20 +123,24 @@ const InitializePaystackTransactionController = async (req, res) => {
                // 6. 🟢 FIXED RESERVATION HOLD INJECTION PATTERN:
                // To avoid complex query array upsert crashes, we query strictly by the eventId.
                // If the master event reservation tracking document doesn't exist, it handles initialization safely.
-               await EventReservationModel.findOneAndUpdate(
-                    { eventId: eventId },
-                    {
-                         $push: {
-                              users: {
-                                   userId: userId,
-                                   reference: reference,
-                                   amountOfPeople: headCount,
-                                   createdAt: new Date() // Useful trace marker
-                              }
-                         }
-                    },
-                    { upsert: true, session }
-               );
+               // await EventReservationModel.findOneAndUpdate(
+               //      { eventId: eventId },
+               //      {
+               //           userId: userId,
+               //           reference: reference,
+               //           amountOfPeople: headCount,
+               //           createdAt: new Date() // Useful trace marker
+               //      },
+               //      { upsert: true, session }
+               // );
+               // Change to insertOne or include userId in the query
+               await EventReservationModel.create([{
+                    eventId: eventId,
+                    userId: userId,
+                    reference: reference,
+                    amountOfPeople: headCount
+               }], { session });
+
 
                logger.info(`[Reservation Hold] Successfully locked ${headCount} seats for User ID: ${userId}`);
           });
