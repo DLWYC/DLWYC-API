@@ -50,7 +50,7 @@ const LoginController = async (req, res) => {
 
           res.cookie('accessToken', accessToken, {
                ...cookieOptions,
-               maxAge: 10 * 60 * 1000
+               maxAge: 15 * 60 * 1000
           })
 
           res.cookie('refreshToken', refreshToken, {
@@ -93,7 +93,7 @@ const LogOutController = async (req, res) => {
 
 const NewUserRegistrationController = async (req, res) => {
      try {
-          const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, password, profilePicture } = req.body;
+          const { fullName, email, phoneNumber, gender, archdeaconry, parish, age, password, profession } = req.body;
 
           // Check IF User Exist Already
           const existingUser = await UserModel.findOne({ email }).lean()
@@ -111,6 +111,7 @@ const NewUserRegistrationController = async (req, res) => {
                password: password,
                archdeaconry: archdeaconry,
                parish: parish,
+               profession: profession
           })
           
           const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])

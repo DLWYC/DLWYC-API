@@ -1,5 +1,6 @@
 const { UserModel } = require('../models/users');
 const { EventModel } = require('../models/events');
+const { MembersCodeModel } = require('../models/membersCode')
 const logger = require('../config/logger');
 
 
@@ -40,5 +41,33 @@ const GetDashboardStatsControllers = async (req, res) => {
 }
 
 
+const GetUsersMembersCodeController = async (req, res) => {
+     try {
+          const uniqueID = req.user?.uniqueId
+          const { eventID } = req.query
+          console.log("UNIQUE ID & EVENT ID", uniqueID, eventID)
 
-module.exports = { GetUserProfileController, GetDashboardStatsControllers }
+          if (!uniqueID || !eventID) {
+               logger.error(`Missing Credentials to get the codes`)
+               return res.status(400).json({ message: "Missing Credentials" })
+          }
+
+          const userRecord = await UserModel.findOne({ uniqueID }).select('_id').lean();
+          if (!userRecord) {
+               return res.status(404).json({ message: "User not found" });
+          }
+
+
+          const membersCodes = await MembersCodeModel.findOne({ payerId: userRecord?._id, eventId: eventID }).select('codes').populate({path: 'codes.user', select: 'fullName'}).lean()
+
+          return res.status(201).json({ message: "Codes", data: membersCodes || [] })
+     }
+     catch (error) {
+          logger.error(`Error Fetching Codes: ${error}`)
+          return res.status(500).json({ message: "Error Fetching Codes", error })
+     }
+}
+
+
+
+module.exports = { GetUserProfileController, GetDashboardStatsControllers, GetUsersMembersCodeController }

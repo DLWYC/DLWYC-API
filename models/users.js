@@ -45,11 +45,10 @@ const UserSchema = new mongoose.Schema(
                required: [true, "Select Your Gender"],
                enum: ["Male", "Female"]
           },
-          // membershipType: {
-          //      type: String,
-          //      required: [true, "Indicate Your Membership Type"],
-          //      enum: ['member', 'guest']
-          // },
+          profession: {
+               type: String,
+               required: [true, "Select A Role"],
+          },
           age: {
                type: String,
                required: [true, "Please Enter Your Age"],
@@ -108,31 +107,6 @@ const UserSchema = new mongoose.Schema(
 
 UserSchema.index({ uniqueID: 1, fullName: 1 }, { unique: true });
 UserSchema.index({ email: 1 }, { unique: true });
-// UserSchema.index({ membershipType: 1 })
-
-// UserSchema.pre('save', async function (next) {
-//      if (this.isNew && !this.uniqueID) {
-//           try {
-//                this.uniqueID = generateUniqueId(this.archdeaconry)
-//           }
-//           catch (error) {
-//                logger.error("Generating Unique ID Failed")
-
-//           }
-//      }
-//      if (!this.isModified('password')) {
-//           console.log("Newpassword", this.password)
-//           return ;
-//      }
-//      try {
-//           this.password = await bcrypt.hash(this.password, 10)
-//      }
-//      catch (error) {
-//           console.log(error)
-//           logger.error(`Bcrypt Pre-Save Hook Error: ${error.message}`)
-//           return error
-//      }
-// });
 
 UserSchema.pre('save', async function (next) {
      if (this.isNew && !this.uniqueID) {

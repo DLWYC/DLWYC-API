@@ -3,8 +3,10 @@ const router = express.Router()
 const { FreeEventRegistrationController, eventCodeVerificationController, FetchAllEventController, FetchEventUserHasRegisteredFor } = require('../../controllers/eventsController')
 const { PaystackWebHookController, InitializePaystackTransactionController, VerifyPaymentTransaction } = require('../../controllers/paymentController')
 const authenticateToken = require("../../middlewares/authentication")
+const { GetUsersMembersCodeController } = require('../../controllers/userController')
 
 
+router.get('/member-codes', authenticateToken, GetUsersMembersCodeController)
 router.get('/all-events', FetchAllEventController)
 router.get('/userRegisteredEvents', authenticateToken, FetchEventUserHasRegisteredFor)
 router.get('/verify-payment/:reference', authenticateToken, VerifyPaymentTransaction)

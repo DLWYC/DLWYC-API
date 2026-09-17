@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const authenticateToken = require('../../middlewares/authentication')
-const { GetUserProfileController, GetDashboardStatsControllers } = require('../../controllers/userController')
+const { GetUserProfileController, GetDashboardStatsControllers, GetUsersMembersCodeController } = require('../../controllers/userController')
 
 
 

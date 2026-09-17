@@ -246,10 +246,6 @@ const eventCodeVerificationController = async (req, res) => {
           logger.info(`Code ${code} successfully verified and claimed by User ${user._id} for Event ${eventId}`);
 
           return res.status(200).json({ message: "Code verification successful! Your ticket is secured.", type: "Code Verification" });
-
-
-          await session.commitTransaction()
-          return res.status(200).json({ message: "Valid Code", type: "Code Verification" })
      }
      catch (error) {
           await session.abortTransaction()
