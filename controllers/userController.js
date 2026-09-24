@@ -59,6 +59,7 @@ const GetUsersMembersCodeController = async (req, res) => {
 
 
           const membersCodes = await MembersCodeModel.findOne({ payerId: userRecord?._id, eventId: eventID }).select('codes').populate({path: 'codes.user', select: 'fullName'}).lean()
+          
 
           return res.status(201).json({ message: "Codes", data: membersCodes || [] })
      }
