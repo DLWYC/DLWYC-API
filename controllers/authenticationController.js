@@ -141,54 +141,6 @@ const NewUserRegistrationController = async (req, res) => {
 }
 
 
-const NewUserProfilePictureUpload = async (req, res) => {
-     const { uniqueID } = req.query
-
-     // Check if there is a file uploaded
-     try {
-          if (!req.file) {
-               logger.error(`No Image File Provided`)
-               res.status(400).json({ error: "Please Provide An Image" })
-          }
-
-          const user = await UserModel.findOne({ uniqueID })
-          if (!user) {
-               return res.status(404).json({ error: "User Not Found", type: "Upload Error" })
-          }
-
-          const folderName = user.archdeaconry ? user.archdeaconry.toLowerCase() : 'general'
-
-          const cloudinaryResponse = await new Promise((resolve, reject) => {
-               cloudinary.uploader.upload_stream({
-                    folder: `DLWYC_YOUTHS/${folderName}`,
-                    public_id: `user_${uniqueID}`,
-                    overwrite: true,
-                    resource_type: "auto",
-                    transformation: [
-                         { width: 500, height: 500, crop: "limit" },
-                         { quality: 'auto' }
-                    ]
-               }, (err, result) => (err ? reject(err) : resolve(result))
-               ).end(req.file.buffer)
-          })
-
-
-          user.profilePicture = cloudinaryResponse.secure_url,
-               user.cloudinaryPublicId = cloudinaryResponse.public_id
-          await user.save()
-          res.status(201).json({ message: "Image Uploaded Successfully" })
-     }
-     catch (error) {
-          console.log(error)
-          logger.error(`Error uploading Picture ${error}`);
-          return res.status(500).json({
-               error: " Internal Server Error During Upload",
-               type: "Upload Error"
-          })
-     }
-}
-
-
 const RequestForgetPasswordLinkController = async (req, res) => {
      const { email } = req.body;
 
@@ -410,4 +362,4 @@ const UserRefreshTokenController = async (req, res) => {
      }
 }
 
-module.exports = { LoginController, UserRefreshTokenController, NewUserRegistrationController, NewUserProfilePictureUpload, RequestForgetPasswordLinkController, ResetUserPasswordController, LogOutController }
+module.exports = { LoginController, UserRefreshTokenController, NewUserRegistrationController, RequestForgetPasswordLinkController, ResetUserPasswordController, LogOutController }
