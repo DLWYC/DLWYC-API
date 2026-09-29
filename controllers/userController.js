@@ -3,6 +3,8 @@ const { EventModel } = require('../models/events');
 const { MembersCodeModel } = require('../models/membersCode')
 const logger = require('../config/logger');
 const cloudinary = require('../config/cloudinary');
+const { errorHandler } = require("../utils/errorhandler");
+
 
 
 
@@ -16,7 +18,11 @@ const GetUserProfileController = async (req, res) => {
                fullName: user?.fullName,
                email: user?.email,
                profilePicture: user?.profilePicture,
-               gender: user?.gender
+               gender: user?.gender,
+               age: user?.age,
+               archdeaconry: user?.archdeaconry,
+               parish: user?.parish,
+               occupation: user?.profession
           }
           console.log(userProfile)
           return res.status(200).json(userProfile);
@@ -73,7 +79,7 @@ const GetUsersMembersCodeController = async (req, res) => {
 
 const UserProfilePictureUpload = async (req, res) => {
      const uniqueID = req.user?.uniqueId
-          console.log("File: ", req.file)
+     console.log("File: ", req.file)
 
      // Check if there is a file uploaded
      try {
@@ -121,5 +127,47 @@ const UserProfilePictureUpload = async (req, res) => {
 }
 
 
+const UserUpdateProfile = async (req, res) => {
+     const uniqueID = req.user?.uniqueId;
 
-module.exports = { GetUserProfileController, GetDashboardStatsControllers, GetUsersMembersCodeController, UserProfilePictureUpload }
+     try {
+          // 1. Added 'email' to destructuring
+          const { fullName, email, archdeaconry, parish, age, profession } = req.body;
+
+          // 2. Fixed typo 'preofession' -> 'profession'
+          console.log("Unique Id: ", uniqueID, fullName, archdeaconry, parish, age, profession);
+
+          // 3. Added { new: true } so 'user' contains the updated data
+          const user = await UserModel.findOneAndUpdate(
+               { uniqueID },
+               {
+                    fullName, // Using shorthand property names
+                    email,
+                    age,
+                    archdeaconry,
+                    parish,
+                    profession
+               },
+               { new: true }
+          ).lean();
+
+          console.log("User", user);
+
+          if (!user) {
+               logger.error({ message: `${fullName || 'User'} does not exist` });
+               return res.status(404).json({ message: "Sorry, this user does not exist" }); // Changed 409 to 404 (Not Found)
+          }
+
+          logger.info(`${user.fullName} Updated Successfully`);
+          return res.status(200).json({ message: `Details Updated Successfully` }); // Changed 201 to 200 (Success/OK)
+
+     } catch (error) {
+          // Make sure errorHandler is an async function since you are using 'await'
+          const errors = await errorHandler(error);
+          return res.status(500).json({ message: "Error Updating User Details", errors });
+     }
+};
+
+
+
+module.exports = { GetUserProfileController, GetDashboardStatsControllers, GetUsersMembersCodeController, UserProfilePictureUpload, UserUpdateProfile }
