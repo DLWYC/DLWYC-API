@@ -19,7 +19,6 @@ const PaystackWebHookController = async (req, res) => {
                return res.status(401).json({ error: "Invalid Cryptographic Signature" })
           }
 
-          console.log(isHashValid, "is hash valid")
           res.status(200).json({ status: "acknowledege" })
 
 

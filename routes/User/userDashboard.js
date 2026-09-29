@@ -9,7 +9,7 @@ const { GetUserProfileController, GetDashboardStatsControllers, UserProfilePictu
 
 router.get('/profile', authenticateToken, GetUserProfileController);
 router.get('/stats', GetDashboardStatsControllers)
-router.patch('/uploadProfileImage', upload.single('profilePicture'), UserProfilePictureUpload)
+router.patch('/uploadProfileImage', authenticateToken, upload.single('file'), UserProfilePictureUpload)
 
 
 

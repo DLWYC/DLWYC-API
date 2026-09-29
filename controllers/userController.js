@@ -2,6 +2,8 @@ const { UserModel } = require('../models/users');
 const { EventModel } = require('../models/events');
 const { MembersCodeModel } = require('../models/membersCode')
 const logger = require('../config/logger');
+const cloudinary = require('../config/cloudinary');
+
 
 
 const GetUserProfileController = async (req, res) => {
@@ -70,14 +72,16 @@ const GetUsersMembersCodeController = async (req, res) => {
 }
 
 const UserProfilePictureUpload = async (req, res) => {
-     const { uniqueID } = req.query
+     const uniqueID = req.user?.uniqueId
+          console.log("File: ", req.file)
 
      // Check if there is a file uploaded
      try {
           if (!req.file) {
                logger.error(`No Image File Provided`)
-               res.status(400).json({ error: "Please Provide An Image" })
+               return res.status(400).json({ error: "Please Provide An Image" })
           }
+
 
           const user = await UserModel.findOne({ uniqueID })
           if (!user) {

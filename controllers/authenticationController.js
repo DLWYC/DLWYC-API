@@ -2,7 +2,6 @@ const { UserModel } = require("../models/users");
 const logger = require("../config/logger");
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken, hashPassword } = require("../services/authenticationService")
 const config = require("../config/index");
-const cloudinary = require('../config/cloudinary');
 const { errorHandler } = require("../utils/errorhandler");
 const jwt = require('jsonwebtoken');
 const emailQueue = require("../services/emailingService");
@@ -45,7 +44,6 @@ const LoginController = async (req, res) => {
           }
 
           const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])
-          console.log("Access Token: ", accessToken)
 
 
           res.cookie('accessToken', accessToken, {
@@ -115,7 +113,6 @@ const NewUserRegistrationController = async (req, res) => {
           })
           
           const [accessToken, refreshToken] = await Promise.all([generateAccessToken(user), generateRefreshToken(user)])
-          console.log("Access Token: ", accessToken)
 
 
           res.cookie('accessToken', accessToken, {
@@ -134,7 +131,6 @@ const NewUserRegistrationController = async (req, res) => {
      }
      catch (error) {
           const errors = await errorHandler(error)
-          console.log("Error Creating User...", errors)
           res.status(500).json({ message: "Error creating User", errors })
      }
 
@@ -153,7 +149,6 @@ const RequestForgetPasswordLinkController = async (req, res) => {
           }
 
           const resetToken = await jwt.sign({ uniqueID: user?.uniqueID, password: user?.password }, config.security.jwtSecret, { expiresIn: '5m' })
-          console.log({ token: resetToken, message: "This is the restToken" })
           emailQueue.push({
                to: email,
                subject: "Password Reset Notification",
@@ -301,7 +296,6 @@ const RequestForgetPasswordLinkController = async (req, res) => {
 const ResetUserPasswordController = async (req, res) => {
      const { token } = req.query
      const { password } = req.body
-     console.log(token, password)
      try {
 
           const decodedUser = await jwt.verify(token, config.security.jwtSecret);

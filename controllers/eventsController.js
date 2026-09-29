@@ -61,7 +61,6 @@ const FreeEventRegistrationController = async (req, res) => {
           const user = await UserModel.findOne({ uniqueID }).select('_id').session(session).lean()
           const eventMeta = await EventModel.findById(eventId).select('eventCapacity').session(session).lean()
 
-          console.log("user: ", user._id)
 
           if (!user) {
                logger.error(`Registration Failed: User with uniqueID ${uniqueID}`)
@@ -164,7 +163,6 @@ const FreeEventRegistrationController = async (req, res) => {
 const eventCodeVerificationController = async (req, res) => {
      const uniqueID = req.user.uniqueId
      const { eventId, code } = req.body
-     console.log(eventId, code)
 
      if (!eventId || !code) {
           logger.error(`Missing Credentials or required Parameters :: Code Verification`)
