@@ -5,6 +5,8 @@ const logger = require('../config/logger');
 
 const authenticateToken = (req, res, next) => {
      const token = req.cookies.accessToken
+     logger.info(`Incoming Token: ${token}`)
+     logger.info(`Incoming Request: ${req}`)
 
      // Check if the token exist
      if (!token) {
