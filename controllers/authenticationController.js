@@ -56,7 +56,7 @@ const LoginController = async (req, res) => {
                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
           })
 
-
+          console.log(`Cookies Set: ${res.cookies}, Access Token: ${accessToken}, Refresh Token: ${refreshToken}`)
           logger.info(`${email} Logged in Successfully @ ${formatter.format(timestamp)}`)
           return res.status(200).json({
                message: "User Logged In Successfully",
