@@ -56,10 +56,11 @@ const LoginController = async (req, res) => {
                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
           })
 
-          console.log(`Cookies Set: ${res.cookies}, Access Token: ${accessToken}, Refresh Token: ${refreshToken}`)
+          console.log(`Cookies Set: ${res}, Access Token: ${accessToken}, Refresh Token: ${refreshToken}`)
           logger.info(`${email} Logged in Successfully @ ${formatter.format(timestamp)}`)
           return res.status(200).json({
                message: "User Logged In Successfully",
+               token: accessToken
           })
 
      }
@@ -331,7 +332,7 @@ const ResetUserPasswordController = async (req, res) => {
 
 
 const UserRefreshTokenController = async (req, res) => {
-     const token = req.cookies.refreshToken;
+     const token = req.cookies.refreshToken || req.headers['authorization']?.split(' ')[1];
      if (!token) {
           logger.error("Unauthorize, No Refresh Token Provided")
           return res.status(401).json({ message: "Unauthorized" })
