@@ -77,7 +77,7 @@ async function tryClaimSlot(familyId, archdeaconry, ageBand, { allowArchOverflow
     },
   };
 
-  return Family.findOneAndUpdate(filter, update, { new: true });
+  return Family.findOneAndUpdate(filter, update, { returnDocument: 'after' });
 }
 
 /**

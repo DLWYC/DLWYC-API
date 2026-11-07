@@ -41,7 +41,7 @@ const PaystackWebHookController = async (req, res) => {
 
 const InitializePaystackTransactionController = async (req, res) => {
      const { uniqueId } = req.user;
-     const { email, amount, eventId, amountOfPeople, reference } = req.body;
+     const { email, amount, eventId, amountOfPeople, reference, fullName, eventTitle, eventDate, eventTime, eventLocation } = req.body;
 
      if (!uniqueId) {
           logger.error("Unauthorized User");
@@ -86,7 +86,7 @@ const InitializePaystackTransactionController = async (req, res) => {
                const lockedEvent = await EventModel.findOneAndUpdate(
                     { _id: eventId },
                     { $set: { updatedAt: new Date() } },
-                    { session, new: true }
+                    { session, returnDocument: 'after' }
                ).select('eventCapacity registeredCount');
 
                if (!lockedEvent) {
@@ -145,7 +145,7 @@ const InitializePaystackTransactionController = async (req, res) => {
           });
 
           // 7. Outside the session transaction layout block, initialize the Paystack gateway pipeline safely
-          const initializationResponse = await InitializeTransaction(email, amount, reference, userId, eventId, amountOfPeople);
+          const initializationResponse = await InitializeTransaction(email, amount, reference, userId, eventId, amountOfPeople, fullName, eventTitle, eventDate, eventTime, eventLocation);
           logger.info(`Response from Paystack: ${initializationResponse}`);
           return res.status(200).json({ data: initializationResponse });
 

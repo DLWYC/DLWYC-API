@@ -79,7 +79,6 @@ const GetUsersMembersCodeController = async (req, res) => {
 
 const UserProfilePictureUpload = async (req, res) => {
      const uniqueID = req.user?.uniqueId
-     console.log("File: ", req.file)
 
      // Check if there is a file uploaded
      try {
@@ -117,7 +116,6 @@ const UserProfilePictureUpload = async (req, res) => {
           res.status(201).json({ message: "Image Uploaded Successfully" })
      }
      catch (error) {
-          console.log(error)
           logger.error(`Error uploading Picture ${error}`);
           return res.status(500).json({
                error: " Internal Server Error During Upload",
@@ -148,10 +146,9 @@ const UserUpdateProfile = async (req, res) => {
                     parish,
                     profession
                },
-               { new: true }
+               { returnDocument: 'after' }
           ).lean();
 
-          console.log("User", user);
 
           if (!user) {
                logger.error({ message: `${fullName || 'User'} does not exist` });

@@ -56,7 +56,6 @@ const LoginController = async (req, res) => {
                maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
           })
 
-          console.log(`Cookies Set: ${res}, Access Token: ${accessToken}, Refresh Token: ${refreshToken}`)
           logger.info(`${email} Logged in Successfully @ ${formatter.format(timestamp)}`)
           return res.status(200).json({
                message: "User Logged In Successfully",
@@ -148,7 +147,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
                logger.error("Password reset requested for non-existent email address.");
                return res.status(200).json({ message: "If this email is registered, you'll receive a reset link shortly." });
           }
-
+ 
           const resetToken = await jwt.sign({ uniqueID: user?.uniqueID, password: user?.password }, config.security.jwtSecret, { expiresIn: '5m' })
           emailQueue.push({
                to: email,
@@ -249,8 +248,8 @@ const RequestForgetPasswordLinkController = async (req, res) => {
                     <p style="margin:0; font-size:12px; color:#687787; line-height:1.7;">
                       Didn't request this? You can safely ignore this email. If you suspect
                       unauthorized access, contact us at
-                      <a href="mailto:help@yourbrand.com" style="color:#27305f; font-weight:500;
-                        text-decoration:none;">help@yourbrand.com</a>.
+                      <a href="mailto:dlwyouth@gmail.com" style="color:#27305f; font-weight:500;
+                        text-decoration:none;">dlwyouth@gmail.com</a>.
                     </p>
 
                   </td>
@@ -261,10 +260,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
                   <td style="padding:14px 40px 20px; border-top:1px solid #e8eaef;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <td style="font-size:11.5px; color:#9aa5b4;">© 2026  <img src="https://dlwyouth.org/main_logo.svg" alt="dlwyc" width="140" style="display: block; font-family: sans-serif; color: #00a5f4; font-size: 22px; font-weight: bold;" border="0"></td>
-                        <td align="right" style="font-size:11.5px; color:#27305f; font-weight:500;">
-                          &#x1F512; Encrypted &amp; secure
-                        </td>
+                        <td style="font-size:11.5px; color:#9aa5b4;"><img src="https://dlwyouth.org/main_logo.svg" alt="dlwyc" width="140" style="display: block; font-family: sans-serif; color: #00a5f4; font-size: 22px; font-weight: bold;" border="0"></td>
                       </tr>
                     </table>
                   </td>
