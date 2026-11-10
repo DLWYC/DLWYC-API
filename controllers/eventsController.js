@@ -60,9 +60,10 @@ const FreeEventRegistrationController = async (req, res) => {
 
      try {
 
-          const user = await UserModel.findOne({ uniqueID }).select('_id fullName').session(session).lean()
+          const user = await UserModel.findOne({ uniqueID }).select('_id fullName email').session(session).lean()
           const eventMeta = await EventModel.findById(eventId).select('eventCapacity eventDate eventTitle eventTime eventLocation').session(session).lean()
 
+          const email = user?.email;
           const fullName = user?.fullName;
           const eventTitle = eventMeta?.eventTitle;
           const eventDate = eventMeta?.eventDate;
