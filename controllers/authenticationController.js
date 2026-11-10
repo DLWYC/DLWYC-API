@@ -48,7 +48,7 @@ const LoginController = async (req, res) => {
 
           res.cookie('accessToken', accessToken, {
                ...cookieOptions,
-               maxAge: 15 * 60 * 1000
+               maxAge: 25 * 60 * 1000
           })
 
           res.cookie('refreshToken', refreshToken, {

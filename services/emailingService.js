@@ -13,7 +13,7 @@ const sendEmailWorker = async (task) => {
      for (let attempt = 1; attempt <= maxAttempt; attempt++) {
           try {
                await resend.emails.send({
-                    from: '"DLWYC ICT" <onboarding@resend.dev>',
+                    from: '"DLWYC ICT" <dlwyouth@dlwyouth.org>',
                     to: task.to,
                     subject: task.subject,
                     html: task.html

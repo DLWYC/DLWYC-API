@@ -58,9 +58,14 @@ const FreeEventRegistrationController = async (req, res) => {
 
      try {
 
-          const user = await UserModel.findOne({ uniqueID }).select('_id').session(session).lean()
-          const eventMeta = await EventModel.findById(eventId).select('eventCapacity').session(session).lean()
+          const user = await UserModel.findOne({ uniqueID }).select('_id fullName').session(session).lean()
+          const eventMeta = await EventModel.findById(eventId).select('eventCapacity eventDate eventTitle eventTime eventLocation').session(session).lean()
 
+          const fullName = user?.fullName;
+          const eventTitle = eventMeta?.eventTitle;
+          const eventDate = eventMeta?.eventDate;
+          const eventTime = eventMeta?.eventTime;
+          const eventLocation = eventMeta?.eventLocation
 
           if (!user) {
                logger.error(`Registration Failed: User with uniqueID ${uniqueID}`)
@@ -139,7 +144,18 @@ const FreeEventRegistrationController = async (req, res) => {
           // await Promise.all(writeOptions);
 
           await session.commitTransaction();
-          logger.info("sdfsdfdsfdsf")
+            await emailQueue.push({
+        to: email,
+        subject: `You're registered: ${eventTitle}`,
+        html: eventRegistrationEmail({
+          fullName,
+          eventTitle,
+          eventDate,
+          eventTime,
+          eventLocation,
+        }),
+      });
+          logger.info(`${}`)
           return res.status(200).json({
                message: "Event Registration Successful",
           });
