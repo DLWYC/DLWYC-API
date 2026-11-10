@@ -155,7 +155,7 @@ const FreeEventRegistrationController = async (req, res) => {
           eventLocation,
         }),
       });
-          logger.info(`${}`)
+          logger.info(`${fullName} Has Registered for ${eventTitle}`)
           return res.status(200).json({
                message: "Event Registration Successful",
           });
