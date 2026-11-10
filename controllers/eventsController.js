@@ -69,6 +69,7 @@ const FreeEventRegistrationController = async (req, res) => {
           const eventDate = eventMeta?.eventDate;
           const eventTime = eventMeta?.eventTime;
           const eventLocation = eventMeta?.eventLocation
+          console.log("Details: ", email, fullName, eventTitle, eventDate, eventTime, eventLocation)
 
           if (!user) {
                logger.error(`Registration Failed: User with uniqueID ${uniqueID}`)
