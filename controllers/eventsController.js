@@ -7,7 +7,7 @@ const { UserModel } = require("../models/users")
 const { MembersCodeModel } = require("../models/membersCode")
 const mongoose = require('mongoose')
 const emailQueue = require("../services/emailingService");
-
+const eventRegistrationEmail = require("../utils/eventRegistrationMailTemplate");
 
 
 
