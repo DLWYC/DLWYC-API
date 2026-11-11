@@ -69,7 +69,7 @@ const FreeEventRegistrationController = async (req, res) => {
           const eventDate = eventMeta?.eventDate;
           const eventTime = eventMeta?.eventTime;
           const eventLocation = eventMeta?.eventLocation
-          console.log("Details: ", email, fullName, eventTitle, eventDate, eventTime, eventLocation)
+    
 
           if (!user) {
                logger.error(`Registration Failed: User with uniqueID ${uniqueID}`)
@@ -147,7 +147,6 @@ const FreeEventRegistrationController = async (req, res) => {
 
           // await Promise.all(writeOptions);
 
-          await session.commitTransaction();
             await emailQueue.push({
         to: email,
         subject: `You're registered: ${eventTitle}`,
@@ -159,6 +158,8 @@ const FreeEventRegistrationController = async (req, res) => {
           eventLocation,
         }),
       });
+          await session.commitTransaction();
+
           logger.info(`${fullName} Has Registered for ${eventTitle}`)
           return res.status(200).json({
                message: "Event Registration Successful",
