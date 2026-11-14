@@ -187,7 +187,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
           <!-- Logo -->
           <tr>
             <td align="center" valign="top" style="padding: 0 0 30px 0;">
-                            <img src="https://dlwyouth.org/main_logo.svg" alt="dlwyc" width="140" style="display: block; font-family: sans-serif; color: #00a5f4; font-size: 22px; font-weight: bold;" border="0">
+                            <img src="https://dlwyouth.org/Logo1.svg" alt="dlwyc" width="140" style="display: block; font-family: sans-serif; color: #00a5f4; font-size: 22px; font-weight: bold;" border="0">
                         </td>
           </tr>
 
@@ -260,7 +260,7 @@ const RequestForgetPasswordLinkController = async (req, res) => {
                   <td style="padding:14px 40px 20px; border-top:1px solid #e8eaef;">
                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                       <tr>
-                        <td style="font-size:11.5px; color:#9aa5b4;"><img src="https://dlwyouth.org/main_logo.svg" alt="dlwyc" width="140" style="display: block; font-family: sans-serif; color: #00a5f4; font-size: 22px; font-weight: bold;" border="0"></td>
+                        <td style="font-size:11.5px; color:#9aa5b4;"><img src="https://dlwyouth.org/Logo1.svg" alt="dlwyc" width="140" style="display: block; font-family: sans-serif; color: #00a5f4; font-size: 22px; font-weight: bold;" border="0"></td>
                       </tr>
                     </table>
                   </td>

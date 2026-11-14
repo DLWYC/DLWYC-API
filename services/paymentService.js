@@ -40,8 +40,8 @@ const InitializeTransaction = async (
         fullName: fullName,
         eventTitle: eventTitle,
         eventDate: eventDate,
-        eventLocation: eventLocation,
         eventTime: eventTime,
+        eventLocation: eventLocation,
       },
       callback_url:
         config.paystack.callbackUrl ||

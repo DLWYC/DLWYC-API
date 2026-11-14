@@ -145,7 +145,7 @@ const InitializePaystackTransactionController = async (req, res) => {
           });
 
           // 7. Outside the session transaction layout block, initialize the Paystack gateway pipeline safely
-          const initializationResponse = await InitializeTransaction(email, amount, reference, userId, eventId, amountOfPeople, fullName, eventTitle, eventDate, eventTime, eventLocation);
+          const initializationResponse = await InitializeTransaction(email, amount, reference, userId, eventId, amountOfPeople, fullName, eventTitle, eventDate, eventLocation, eventTime);
           logger.info(`Response from Paystack: ${initializationResponse}`);
           return res.status(200).json({ data: initializationResponse });
 
